@@ -18,7 +18,7 @@ class HomeViewModel(
     val tabSelected: LiveData<TabViewDestination> = _tabSelected
     val onTabSelected: (TabViewDestination) -> Unit = {
         _tabSelected.value = it
-        routerController.navigateToRoute(it.route)
+        routerController.navigateBetweenTabs(it.route)
     }
 }
 

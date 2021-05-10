@@ -4,11 +4,11 @@ import androidx.navigation.NavType
 
 enum class ViewDestination(
     val route: String,
-    val arguments: List<Pair<String, NavType<*>>>
+    val arguments: Pair<String, NavType<*>>
 )
 {
     RecipeDetailView(
         route = "recipeDetailView",
-        arguments = listOf(Pair("recipeId", NavType.IntType))
+        arguments = Pair("recipeId", NavType.IntType)
     )
 }

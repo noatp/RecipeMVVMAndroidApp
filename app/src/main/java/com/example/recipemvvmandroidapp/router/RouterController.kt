@@ -15,6 +15,16 @@ class RouterController: ViewModel() {
     fun navigateToRoute(route: String){
         navController.navigate(route)
     }
+
+    fun navigateBetweenTabs(route: String){
+        navController.navigate(
+            route = route,
+            builder = {
+                popUpTo = navController.graph.startDestination
+                launchSingleTop = true
+            }
+        )
+    }
 }
 
 fun Dependency.ViewModel.routerController(): RouterController{

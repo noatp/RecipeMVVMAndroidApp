@@ -7,7 +7,9 @@ import androidx.compose.ui.Modifier
 import com.example.recipemvvmandroidapp.dependency.Dependency
 
 @Composable
-fun Dependency.View.RecipeDetailView()
+fun Dependency.View.RecipeDetailView(
+    recipeId: Int
+)
 {
     Column(
         modifier = Modifier
