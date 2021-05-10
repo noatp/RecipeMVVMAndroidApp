@@ -4,17 +4,22 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.example.recipemvvmandroidapp.dependency.Dependency
-import com.example.recipemvvmandroidapp.router.RouterContainer
 import com.example.recipemvvmandroidapp.router.TabViewDestination
+import com.example.recipemvvmandroidapp.router.ViewDestination
+import com.example.recipemvvmandroidapp.router.routerController
+import com.example.recipemvvmandroidapp.view.tabView.DiscoveryView
+import com.example.recipemvvmandroidapp.view.tabView.SearchRecipeView
 import com.example.recipemvvmandroidapp.view.viewComponent.BottomNavBar
 import com.example.recipemvvmandroidapp.viewModel.HomeViewModel
 import com.example.recipemvvmandroidapp.viewModel.homeViewModel
@@ -25,8 +30,7 @@ fun Dependency.View.CreateHomeView(
     navController: NavHostController
 )
 {
-    val tabSelected: TabViewDestination by homeViewModel
-        .tabSelected.observeAsState(TabViewDestination.Search)
+    val tabSelected = homeViewModel.selectedTab.value
     Scaffold (
         modifier = Modifier,
         topBar = {/*TODO*/},
@@ -41,7 +45,37 @@ fun Dependency.View.CreateHomeView(
             )
         } },
         content = {
-            RouterContainer(navController = navController)
+            val routerController = viewModel.routerController()
+            routerController.navController = navController
+            NavHost(navController = navController, startDestination = TabViewDestination.Search.route)
+            {
+                TabViewDestination.values().map { tabViewDestination: TabViewDestination ->
+                    composable(tabViewDestination.route) {
+                        homeViewModel.updateSelectedTab(tabViewDestination)
+                        when(tabViewDestination)
+                        {
+                            TabViewDestination.Search -> SearchRecipeView()
+                            TabViewDestination.Discovery -> DiscoveryView()
+                        }
+                    }
+                }
+
+                ViewDestination.values().map{ viewDestination: ViewDestination ->
+                    composable(
+                        route = viewDestination.route + "/{${viewDestination.arguments.first}}",
+                        arguments = listOf(
+                            navArgument(viewDestination.arguments.first){
+                                type = viewDestination.arguments.second}
+                        )
+                    ) {
+                        when(viewDestination)
+                        {
+                            ViewDestination.RecipeDetailView
+                            -> RecipeDetailView(it.arguments?.getInt(viewDestination.arguments.first)!!)
+                        }
+                    }
+                }
+            }
         }
     )
 }

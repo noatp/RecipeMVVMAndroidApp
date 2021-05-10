@@ -1,12 +1,12 @@
 package com.example.recipemvvmandroidapp.viewModel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.recipemvvmandroidapp.dependency.Dependency
 import com.example.recipemvvmandroidapp.router.RouterController
 import com.example.recipemvvmandroidapp.router.TabViewDestination
 import com.example.recipemvvmandroidapp.router.routerController
+import androidx.compose.runtime.MutableState
 
 class HomeViewModel(
     routerController: RouterController
@@ -14,11 +14,15 @@ class HomeViewModel(
     companion object{
         var instance: HomeViewModel? = null
     }
-    private val _tabSelected = MutableLiveData(TabViewDestination.Search)
-    val tabSelected: LiveData<TabViewDestination> = _tabSelected
+
+    var selectedTab: MutableState<TabViewDestination> = mutableStateOf(TabViewDestination.Search)
+
+    fun updateSelectedTab(tabViewDestination: TabViewDestination){
+        selectedTab.value = tabViewDestination
+    }
+
     val onTabSelected: (TabViewDestination) -> Unit = {
-        _tabSelected.value = it
-        routerController.navigateBetweenTabs(it.route)
+        routerController.navigateBetweenTabs(it)
     }
 }
 

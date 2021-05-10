@@ -12,13 +12,9 @@ class RouterController: ViewModel() {
 
     lateinit var navController: NavHostController
 
-    fun navigateToRoute(route: String){
-        navController.navigate(route)
-    }
-
-    fun navigateBetweenTabs(route: String){
+    fun navigateBetweenTabs(tabViewDestination: TabViewDestination){
         navController.navigate(
-            route = route,
+            route = tabViewDestination.route,
             builder = {
                 popUpTo = navController.graph.startDestination
                 launchSingleTop = true
