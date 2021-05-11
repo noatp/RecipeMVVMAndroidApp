@@ -23,16 +23,34 @@ class Dependency (
         return UseCase(repository())
     }
 
-    class ViewModel(val useCase: UseCase)
+    class ViewModel(
+        val useCase: UseCase,
+        val router: Router
+    )
     private fun viewModel(): ViewModel
     {
-        return ViewModel(useCase())
+        return ViewModel(
+            useCase(),
+            router()
+        )
     }
 
-    class View(val viewModel: ViewModel)
+    class View(
+        val viewModel: ViewModel,
+        val router: Router
+        )
     fun view(): View
     {
-        return View(viewModel())
+        return View(
+            viewModel(),
+            router()
+        )
+    }
+
+    class Router()
+    fun router(): Router
+    {
+        return Router()
     }
 }
 

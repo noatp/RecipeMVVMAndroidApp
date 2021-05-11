@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,7 +44,7 @@ fun Dependency.View.CreateHomeView(
             )
         } },
         content = {
-            val routerController = viewModel.routerController()
+            val routerController = router.routerController()
             routerController.navController = navController
             NavHost(navController = navController, startDestination = TabViewDestination.Search.route)
             {

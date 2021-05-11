@@ -5,7 +5,7 @@ import com.example.recipemvvmandroidapp.dependency.Dependency
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.navigate
 
-class RouterController: ViewModel() {
+class RouterController() {
     companion object{
         var instance: RouterController? = null
     }
@@ -21,9 +21,15 @@ class RouterController: ViewModel() {
             }
         )
     }
+
+    fun navigateToRecipeDetailView(recipeId: Int){
+        navController.navigate(
+            route = ViewDestination.RecipeDetailView.route + "/$recipeId"
+        )
+    }
 }
 
-fun Dependency.ViewModel.routerController(): RouterController{
+fun Dependency.Router.routerController(): RouterController{
     if(RouterController.instance == null)
     {
         RouterController.instance = RouterController()

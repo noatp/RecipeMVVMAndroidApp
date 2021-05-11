@@ -2,6 +2,7 @@ package com.example.recipemvvmandroidapp.view.viewComponent
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
@@ -21,7 +22,8 @@ import kotlinx.coroutines.Dispatchers
 @Composable
 fun RecipeCard(
     recipeName: String,
-    recipeImageUrl: String
+    recipeImageUrl: String,
+    onClick: () -> Unit
 )
 {
     val painter = rememberCoilPainter(
@@ -34,7 +36,8 @@ fun RecipeCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(16.dp)
+            .clickable(onClick = onClick),
         backgroundColor = DarkBackground,
         shape = Shapes.small,
         border = BorderStroke(1.dp, DarkBackgroundVariant),
@@ -72,16 +75,5 @@ fun RecipeCard(
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
-    )
-}
-
-
-@Preview
-@Composable
-fun PreviewRecipeCard()
-{
-    RecipeCard(
-        "Restaurant Style Smashed Potatoes",
-        "https://nyc3.digitaloceanspaces.com/food2fork/food2fork-static/featured_images/2096/featured_image.png"
     )
 }

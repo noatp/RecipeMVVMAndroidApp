@@ -28,6 +28,6 @@ class HomeViewModel(
 
 fun Dependency.ViewModel.homeViewModel(): HomeViewModel{
     if(HomeViewModel.instance == null)
-        HomeViewModel.instance = HomeViewModel(routerController = routerController())
+        HomeViewModel.instance = HomeViewModel(routerController = router.routerController())
     return HomeViewModel.instance!!
 }

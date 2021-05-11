@@ -17,7 +17,7 @@ fun Dependency.View.RecipeDetailView(
         //Image
 
         //Title
-        Text("Title")
+        Text("Id: $recipeId")
         Text("Publisher")
         Text("Rating")
 
