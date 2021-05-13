@@ -14,9 +14,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.example.recipemvvmandroidapp.dependency.Dependency
+import com.example.recipemvvmandroidapp.router.RouterController
 import com.example.recipemvvmandroidapp.router.TabViewDestination
 import com.example.recipemvvmandroidapp.router.ViewDestination
-import com.example.recipemvvmandroidapp.router.routerController
 import com.example.recipemvvmandroidapp.view.tabView.DiscoveryView
 import com.example.recipemvvmandroidapp.view.tabView.SearchRecipeView
 import com.example.recipemvvmandroidapp.view.viewComponent.BottomNavBar
@@ -26,7 +26,7 @@ import com.example.recipemvvmandroidapp.viewModel.homeViewModel
 @Composable
 fun Dependency.View.CreateHomeView(
     homeViewModel: HomeViewModel,
-    navController: NavHostController
+    router: RouterController
 )
 {
     val tabSelected = homeViewModel.selectedTab.value
@@ -38,23 +38,21 @@ fun Dependency.View.CreateHomeView(
             contentPadding = PaddingValues(0.dp)
         ) {
             BottomNavBar(
-                titles = TabViewDestination.values().map { it.name },
+                tabs = TabViewDestination.values(),
                 tabSelected = tabSelected,
-                onTabSelected = homeViewModel.onTabSelected
+                onTabSelected = {router.navigateBetweenTabs(it)}
             )
         } },
         content = {
-            val routerController = router.routerController()
-            routerController.navController = navController
-            NavHost(navController = navController, startDestination = TabViewDestination.Search.route)
+            NavHost(navController = router.navController, startDestination = TabViewDestination.Search.route)
             {
                 TabViewDestination.values().map { tabViewDestination: TabViewDestination ->
                     composable(tabViewDestination.route) {
                         homeViewModel.updateSelectedTab(tabViewDestination)
                         when(tabViewDestination)
                         {
-                            TabViewDestination.Search -> SearchRecipeView()
-                            TabViewDestination.Discovery -> DiscoveryView()
+                            TabViewDestination.Search -> SearchRecipeView(router)
+                            TabViewDestination.Discovery -> DiscoveryView(router)
                         }
                     }
                 }
@@ -80,11 +78,13 @@ fun Dependency.View.CreateHomeView(
 }
 
 @Composable
-fun Dependency.View.HomeView()
+fun Dependency.View.HomeView(router: RouterController)
 {
     val homeViewModel = viewModel.homeViewModel()
-    val navController = rememberNavController()
-    CreateHomeView(homeViewModel = homeViewModel, navController = navController)
+    CreateHomeView(
+        homeViewModel = homeViewModel,
+        router = router
+    )
 }
 
 @Preview

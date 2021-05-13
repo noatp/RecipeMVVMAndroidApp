@@ -1,8 +1,14 @@
 package com.example.recipemvvmandroidapp.router
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Lightbulb
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.ui.graphics.vector.ImageVector
+
 enum class TabViewDestination(
-    val route: String
+    val route: String,
+    val icon: ImageVector
 ){
-    Search("search"),
-    Discovery("discovery")
+    Search(route = "search", icon = Icons.Outlined.Search),
+    Discovery(route = "discovery", icon = Icons.Outlined.Lightbulb)
 }
