@@ -4,20 +4,21 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.navigate
 
 class RouterController(
-    val navController: NavHostController
+    val tabController: NavHostController,
+    val modalController: NavHostController
 ) {
     fun navigateBetweenTabs(tabViewDestination: TabViewDestination){
-        navController.navigate(
+        tabController.navigate(
             route = tabViewDestination.route,
             builder = {
-                popUpTo = navController.graph.startDestination
+                popUpTo = tabController.graph.startDestination
                 launchSingleTop = true
             }
         )
     }
 
     fun navigateToRecipeDetailView(recipeId: Int){
-        navController.navigate(
+        modalController.navigate(
             route = ViewDestination.RecipeDetailView.route + "/$recipeId"
         )
     }

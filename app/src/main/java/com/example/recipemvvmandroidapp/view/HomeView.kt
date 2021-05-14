@@ -44,7 +44,7 @@ fun Dependency.View.CreateHomeView(
             )
         } },
         content = {
-            NavHost(navController = router.navController, startDestination = TabViewDestination.Search.route)
+            NavHost(navController = router.tabController, startDestination = TabViewDestination.Search.route)
             {
                 TabViewDestination.values().map { tabViewDestination: TabViewDestination ->
                     composable(tabViewDestination.route) {
@@ -56,25 +56,29 @@ fun Dependency.View.CreateHomeView(
                         }
                     }
                 }
-
-                ViewDestination.values().map{ viewDestination: ViewDestination ->
-                    composable(
-                        route = viewDestination.route + "/{${viewDestination.arguments.first}}",
-                        arguments = listOf(
-                            navArgument(viewDestination.arguments.first){
-                                type = viewDestination.arguments.second}
-                        )
-                    ) {
-                        when(viewDestination)
-                        {
-                            ViewDestination.RecipeDetailView
-                            -> RecipeDetailView(it.arguments?.getInt(viewDestination.arguments.first)!!)
-                        }
-                    }
-                }
             }
         }
     )
+
+    NavHost(navController = router.modalController, startDestination = "blank")
+    {
+        composable(route = "blank") {}
+        ViewDestination.values().map{ viewDestination: ViewDestination ->
+            composable(
+                route = viewDestination.route + "/{${viewDestination.arguments.first}}",
+                arguments = listOf(
+                    navArgument(viewDestination.arguments.first){
+                        type = viewDestination.arguments.second}
+                )
+            ) {
+                when(viewDestination)
+                {
+                    ViewDestination.RecipeDetailView
+                    -> RecipeDetailView(it.arguments?.getInt(viewDestination.arguments.first)!!)
+                }
+            }
+        }
+    }
 }
 
 @Composable

@@ -27,8 +27,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val navController = rememberNavController()
-            router = RouterController(navController = navController)
+            val tabController = rememberNavController()
+            val modalController = rememberNavController()
+            router = RouterController(
+                tabController = tabController,
+                modalController = modalController
+            )
             dependency.view().HomeView(router = router)
         }
     }
