@@ -34,7 +34,7 @@ fun CreateRecipeCard(
             .fillMaxWidth()
             .padding(16.dp)
             .clickable(onClick = onClick),
-        backgroundColor = DarkBackground,
+        backgroundColor = LightBackground,
         shape = Shapes.small,
         border = BorderStroke(1.dp, DarkBackgroundVariant),
         content = {
@@ -84,7 +84,7 @@ fun CreateRecipeCard(
                     text = recipeName,
                     modifier = Modifier
                         .padding(8.dp),
-                    color = LightText,
+                    color = DarkBackground,
                     maxLines = 1,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
