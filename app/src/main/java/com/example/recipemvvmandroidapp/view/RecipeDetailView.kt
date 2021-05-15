@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.recipemvvmandroidapp.R
 import com.example.recipemvvmandroidapp.dependency.Dependency
+import com.example.recipemvvmandroidapp.ui.theme.LightBackground
 import com.example.recipemvvmandroidapp.ui.theme.Shapes
 import com.example.recipemvvmandroidapp.viewModel.RecipeDetailViewModel
 import com.example.recipemvvmandroidapp.viewModel.recipeDetailViewModel
@@ -41,7 +42,7 @@ fun RecipeDetailView(
                         modifier = Modifier
                             .padding(8.dp)
                             .fillMaxWidth()
-                            .height(400.dp)
+                            .height(250.dp)
                             .clip(Shapes.medium),
                         contentScale = ContentScale.FillWidth
                     )
@@ -54,7 +55,7 @@ fun RecipeDetailView(
                         modifier = Modifier
                             .padding(8.dp)
                             .fillMaxWidth()
-                            .height(400.dp)
+                            .height(250.dp)
                             .clip(Shapes.medium)
                     )
                 }
@@ -62,10 +63,12 @@ fun RecipeDetailView(
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .height(400.dp)
+                            .height(250.dp)
                             .fillMaxWidth(),
                     ){
-                        CircularProgressIndicator()
+                        CircularProgressIndicator(
+                            color = LightBackground
+                        )
                     }
                 }
             }

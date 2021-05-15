@@ -74,7 +74,9 @@ fun CreateRecipeCard(
                                 .height(200.dp)
                                 .fillMaxWidth(),
                         ){
-                            CircularProgressIndicator()
+                            CircularProgressIndicator(
+                                color = LightBackground
+                            )
                         }
                     }
                 }
