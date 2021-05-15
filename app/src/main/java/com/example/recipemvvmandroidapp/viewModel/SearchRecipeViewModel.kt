@@ -37,7 +37,7 @@ class SearchRecipeViewModel(
     private var pageIndex: Int = 1
 
     //event for search bar
-    val onSearchTextChange: (String) -> Unit = {
+    val onSearchTextChanged: (String) -> Unit = {
         _searchBarText.value = it
     }
 

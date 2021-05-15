@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.recipemvvmandroidapp.dependency.Dependency
 import com.example.recipemvvmandroidapp.router.RouterController
@@ -19,15 +20,13 @@ import com.example.recipemvvmandroidapp.view.viewComponent.SearchBar
 import com.example.recipemvvmandroidapp.viewModel.SearchRecipeViewModel
 
 @Composable
-fun Dependency.View.CreateSearchRecipeView(
-    searchRecipeViewModel: SearchRecipeViewModel,
-    router: RouterController
-)
-{
-    val searchBarText: String by searchRecipeViewModel.searchBarText.observeAsState(initial = "")
-
-    val recipeList = searchRecipeViewModel.recipeListForCardView.value
-
+fun SearchRecipeView(
+    searchBarText: String,
+    onSearchTextChanged: (String) -> Unit,
+    recipeList: List<SearchRecipeViewModel.RecipeForCardViewInViewModel>,
+    onSearch: () -> Unit,
+    onClickRecipeCard: (Int) -> Unit
+){
     Scaffold(
         modifier = Modifier,
         topBar = {
@@ -39,9 +38,9 @@ fun Dependency.View.CreateSearchRecipeView(
             {
                 SearchBar(
                     textContent = searchBarText,
-                    onValueChange = searchRecipeViewModel.onSearchTextChange,
+                    onValueChange = onSearchTextChanged,
                     labelContent = "Search recipe",
-                    onSearch = searchRecipeViewModel.onSearch
+                    onSearch = onSearch
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyColumn() {
@@ -50,12 +49,31 @@ fun Dependency.View.CreateSearchRecipeView(
                             recipeName = recipe.title,
                             recipeImageUrl = recipe.featuredImage,
                             onClick = {
-                                router.navigateToRecipeDetailView(recipe.id)
+                                onClickRecipeCard(recipe.id)
                             }
                         )
                     }
                 }
             }
+        }
+    )
+}
+
+@Composable
+fun Dependency.View.CreateSearchRecipeView(
+    searchRecipeViewModel: SearchRecipeViewModel,
+    router: RouterController
+)
+{
+    val searchBarText: String by searchRecipeViewModel.searchBarText.observeAsState(initial = "")
+    val recipeList = searchRecipeViewModel.recipeListForCardView.value
+    SearchRecipeView(
+        searchBarText = searchBarText,
+        onSearchTextChanged = searchRecipeViewModel.onSearchTextChanged,
+        recipeList = recipeList,
+        onSearch = searchRecipeViewModel.onSearch,
+        onClickRecipeCard = {recipeId: Int ->
+            router.navigateToRecipeDetailView(recipeId)
         }
     )
 }
@@ -67,5 +85,22 @@ fun Dependency.View.SearchRecipeView(router: RouterController)
     CreateSearchRecipeView(
         searchRecipeViewModel = searchRecipeViewModel,
         router = router
+    )
+}
+
+@Preview
+@Composable
+fun PreviewSearchRecipeView()
+{
+    SearchRecipeView(
+        searchBarText = "chicken",
+        onSearchTextChanged = { /*TODO*/ },
+        recipeList = listOf(SearchRecipeViewModel.RecipeForCardViewInViewModel(
+            id = 123,
+            title = "New recipe",
+            featuredImage = "https://nyc3.digitaloceanspaces.com/food2fork/food2fork-static/featured_images/583/featured_image.png"
+        )),
+        onSearch = { /*TODO*/ },
+        onClickRecipeCard = {}
     )
 }
