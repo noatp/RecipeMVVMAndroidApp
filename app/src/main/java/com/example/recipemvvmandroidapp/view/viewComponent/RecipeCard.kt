@@ -58,7 +58,7 @@ fun CreateRecipeCard(
                     // for preview
                     ImageLoadState.Empty -> {
                         Image(
-                            painter = painterResource(id = R.drawable.load_placeholder),
+                            painter = painterResource(id = R.drawable.blank),
                             contentDescription = "loadplaceholder",
                             modifier = Modifier
                                 .padding(8.dp)

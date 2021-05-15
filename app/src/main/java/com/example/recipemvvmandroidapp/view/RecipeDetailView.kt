@@ -8,11 +8,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.recipemvvmandroidapp.R
 import com.example.recipemvvmandroidapp.dependency.Dependency
+import com.example.recipemvvmandroidapp.ui.theme.Shapes
 import com.example.recipemvvmandroidapp.viewModel.RecipeDetailViewModel
 import com.example.recipemvvmandroidapp.viewModel.recipeDetailViewModel
 import com.google.accompanist.coil.rememberCoilPainter
@@ -30,17 +33,40 @@ fun RecipeDetailView(
             modifier = Modifier.fillMaxSize()
         ) {
             //Image
-            Image(
-                painter = painter,
-                contentDescription = "random image",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(400.dp),
-                contentScale = ContentScale.FillWidth
-            )
-            when(painter.loadState){
-                ImageLoadState.Loading -> {
-                    CircularProgressIndicator(Modifier.align(Alignment.CenterHorizontally))
+            when (painter.loadState) {
+                is ImageLoadState.Success -> {
+                    Image(
+                        painter = painter,
+                        contentDescription = "${recipe.title}",
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth()
+                            .height(400.dp)
+                            .clip(Shapes.medium),
+                        contentScale = ContentScale.FillWidth
+                    )
+                }
+                // for preview
+                ImageLoadState.Empty -> {
+                    Image(
+                        painter = painterResource(id = R.drawable.blank),
+                        contentDescription = "loadplaceholder",
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth()
+                            .height(400.dp)
+                            .clip(Shapes.medium)
+                    )
+                }
+                else -> {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .height(400.dp)
+                            .fillMaxWidth(),
+                    ){
+                        CircularProgressIndicator()
+                    }
                 }
             }
             //Title
