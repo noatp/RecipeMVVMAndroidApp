@@ -91,7 +91,7 @@ fun PreviewRecipeCard()
 {
     RecipeCard(
         recipeName = "Test a long long long long name",
-        recipeImageUrl = "https://nyc3.digitaloceanspaces.com/food2fork/food2fork-static/featured_images/583/featured_image.png",
+        recipeImageUrl = "url",
         onClick = {}
     )
 }

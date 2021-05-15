@@ -88,7 +88,7 @@ fun PreviewSearchRecipeView()
         recipeList = listOf(SearchRecipeViewModel.RecipeForCardViewInViewModel(
             id = 123,
             title = "New recipe",
-            featuredImage = "https://nyc3.digitaloceanspaces.com/food2fork/food2fork-static/featured_images/583/featured_image.png"
+            featuredImage = "url"
         )),
         onSearch = { /*TODO*/ },
         onClickRecipeCard = {}
