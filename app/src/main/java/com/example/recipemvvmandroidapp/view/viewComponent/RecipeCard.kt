@@ -11,7 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.recipemvvmandroidapp.ui.theme.*
@@ -19,23 +21,14 @@ import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
 import kotlinx.coroutines.Dispatchers
 import com.example.recipemvvmandroidapp.R
+import com.google.accompanist.imageloading.LoadPainter
 
 @Composable
-fun RecipeCard(
+fun CreateRecipeCard(
     recipeName: String,
-    recipeImageUrl: String,
-    onClick: () -> Unit
-)
-{
-    val painter = rememberCoilPainter(
-        request = recipeImageUrl,
-        requestBuilder = {
-            dispatcher(Dispatchers.IO)
-            placeholder(R.drawable.load_placeholder)
-        },
-        fadeIn = true,
-        previewPlaceholder = R.drawable.load_placeholder
-    )
+    onClick: () -> Unit,
+    painter: LoadPainter<Any>
+){
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -50,28 +43,41 @@ fun RecipeCard(
                     .fillMaxWidth()
             ) {
                 when (painter.loadState) {
-                    ImageLoadState.Loading -> {
-                        // Display a circular progress indicator whilst loading
-                        CircularProgressIndicator(
-                            Modifier
-                                .align(Alignment.CenterHorizontally)
+                    is ImageLoadState.Success -> {
+                        Image(
+                            painter = painter,
+                            contentDescription = "random image",
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .clip(Shapes.medium),
+                            contentScale = ContentScale.FillWidth
                         )
                     }
-                    is ImageLoadState.Error -> {
-                        // If you wish to display some content if the request fails
+                    // for preview
+                    ImageLoadState.Empty -> {
+                        Image(
+                            painter = painterResource(id = R.drawable.load_placeholder),
+                            contentDescription = "loadplaceholder",
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .clip(Shapes.medium)
+                        )
+                    }
+                    else -> {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .height(200.dp)
+                                .fillMaxWidth(),
+                        ){
+                            CircularProgressIndicator()
+                        }
                     }
                 }
-                Image(
-                    painter = painter,
-                    contentDescription = "random image",
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(Shapes.medium),
-                    contentScale = ContentScale.FillWidth
-                )
-
                 Text(
                     text = recipeName,
                     modifier = Modifier
@@ -85,13 +91,39 @@ fun RecipeCard(
     )
 }
 
+@Composable
+fun RecipeCard(
+    recipeName: String,
+    recipeImageUrl: String,
+    onClick: () -> Unit,
+)
+{
+    val painter = rememberCoilPainter(
+        request = recipeImageUrl,
+        requestBuilder = {
+            dispatcher(Dispatchers.IO)
+        },
+        fadeIn = true
+    )
+    CreateRecipeCard(
+        recipeName = recipeName,
+        onClick = onClick,
+        painter = painter
+    )
+}
+
 @Preview
 @Composable
-fun PreviewRecipeCard()
+fun PreviewCreateRecipeCard()
 {
-    RecipeCard(
+    val painter = rememberCoilPainter(
+        request = "url",
+        fadeIn = true,
+        previewPlaceholder = R.drawable.load_placeholder
+    )
+    CreateRecipeCard(
         recipeName = "Test a long long long long name",
-        recipeImageUrl = "url",
-        onClick = {}
+        onClick = {},
+        painter = painter
     )
 }
