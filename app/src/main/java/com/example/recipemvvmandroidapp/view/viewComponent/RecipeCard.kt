@@ -18,6 +18,7 @@ import com.example.recipemvvmandroidapp.ui.theme.*
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
 import kotlinx.coroutines.Dispatchers
+import com.example.recipemvvmandroidapp.R
 
 @Composable
 fun RecipeCard(
@@ -30,8 +31,10 @@ fun RecipeCard(
         request = recipeImageUrl,
         requestBuilder = {
             dispatcher(Dispatchers.IO)
+            placeholder(R.drawable.load_placeholder)
         },
         fadeIn = true,
+        previewPlaceholder = R.drawable.load_placeholder
     )
     Card(
         modifier = Modifier
@@ -79,5 +82,16 @@ fun RecipeCard(
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
+    )
+}
+
+@Preview
+@Composable
+fun PreviewRecipeCard()
+{
+    RecipeCard(
+        recipeName = "Test a long long long long name",
+        recipeImageUrl = "https://nyc3.digitaloceanspaces.com/food2fork/food2fork-static/featured_images/583/featured_image.png",
+        onClick = {}
     )
 }
