@@ -24,12 +24,13 @@ import com.example.recipemvvmandroidapp.viewModel.HomeViewModel
 import com.example.recipemvvmandroidapp.viewModel.homeViewModel
 
 @Composable
-fun Dependency.View.CreateHomeView(
-    homeViewModel: HomeViewModel,
-    router: RouterController
+fun HomeView(
+    tabSelected: TabViewDestination,
+    router: RouterController,
+    updateSelectedTab: (TabViewDestination) -> Unit,
+    view: Dependency.View
 )
 {
-    val tabSelected = homeViewModel.selectedTab.value
     Scaffold (
         modifier = Modifier,
         topBar = {/*TODO*/},
@@ -48,11 +49,11 @@ fun Dependency.View.CreateHomeView(
             {
                 TabViewDestination.values().map { tabViewDestination: TabViewDestination ->
                     composable(tabViewDestination.route) {
-                        homeViewModel.updateSelectedTab(tabViewDestination)
+                        updateSelectedTab(tabViewDestination)
                         when(tabViewDestination)
                         {
-                            TabViewDestination.Search -> SearchRecipeView(router)
-                            TabViewDestination.Discovery -> DiscoveryView(router)
+                            TabViewDestination.Search -> view.SearchRecipeView(router)
+                            TabViewDestination.Discovery -> view.DiscoveryView(router)
                         }
                     }
                 }
@@ -74,7 +75,7 @@ fun Dependency.View.CreateHomeView(
                 when(viewDestination)
                 {
                     ViewDestination.RecipeDetailView
-                    -> RecipeDetailView(it.arguments?.getInt(viewDestination.arguments.first)!!)
+                    -> view.RecipeDetailView(it.arguments?.getInt(viewDestination.arguments.first)!!)
                 }
             }
         }
@@ -85,15 +86,13 @@ fun Dependency.View.CreateHomeView(
 fun Dependency.View.HomeView(router: RouterController)
 {
     val homeViewModel = viewModel.homeViewModel()
-    CreateHomeView(
-        homeViewModel = homeViewModel,
-        router = router
+    val tabSelected = homeViewModel.selectedTab.value
+    HomeView(
+        tabSelected = tabSelected,
+        router = router,
+        updateSelectedTab = {tabViewDestination ->
+            homeViewModel.updateSelectedTab(tabViewDestination)
+        },
+        view = this
     )
-}
-
-@Preview
-@Composable
-fun PreviewHomeView()
-{
-    //HomeView()
 }
