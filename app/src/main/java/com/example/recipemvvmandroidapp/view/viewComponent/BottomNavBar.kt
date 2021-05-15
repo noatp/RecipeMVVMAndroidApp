@@ -71,9 +71,17 @@ fun BottomNavBar(
 @Composable
 fun PreviewBottomNavBar()
 {
-    BottomNavBar(
-        tabs = TabViewDestination.values(),
-        tabSelected =  TabViewDestination.Search,
-        onTabSelected = {}
-    )
+    Scaffold (
+        bottomBar = {
+            BottomAppBar() {
+                BottomNavBar(
+                    tabs = TabViewDestination.values(),
+                    tabSelected = TabViewDestination.Search,
+                    onTabSelected = {}
+                )
+            }
+        }
+    ){
+
+    }
 }

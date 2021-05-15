@@ -36,8 +36,7 @@ class RecipeDetailViewModel(
 
     fun onLaunch(recipeId: Int){
         viewModelScope.launch(Dispatchers.IO) {
-            val result = getRecipeDetailUseCase.execute(recipeId)
-            when(result)
+            when(val result = getRecipeDetailUseCase.execute(recipeId))
             {
                 is UseCaseResult.Success -> recipeForDetailView.value = result.resultValue.let{
                     RecipeForDetailViewInViewModel(
