@@ -60,11 +60,11 @@ fun SearchRecipeView(
 }
 
 @Composable
-fun Dependency.View.CreateSearchRecipeView(
-    searchRecipeViewModel: SearchRecipeViewModel,
+fun Dependency.View.SearchRecipeView(
     router: RouterController
 )
 {
+    val searchRecipeViewModel = viewModel.searchRecipeViewModel()
     val searchBarText: String by searchRecipeViewModel.searchBarText.observeAsState(initial = "")
     val recipeList = searchRecipeViewModel.recipeListForCardView.value
     SearchRecipeView(
@@ -75,16 +75,6 @@ fun Dependency.View.CreateSearchRecipeView(
         onClickRecipeCard = {recipeId: Int ->
             router.navigateToRecipeDetailView(recipeId)
         }
-    )
-}
-
-@Composable
-fun Dependency.View.SearchRecipeView(router: RouterController)
-{
-    val searchRecipeViewModel = viewModel.searchRecipeViewModel()
-    CreateSearchRecipeView(
-        searchRecipeViewModel = searchRecipeViewModel,
-        router = router
     )
 }
 
