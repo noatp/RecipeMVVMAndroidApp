@@ -4,37 +4,37 @@ import com.example.recipemvvmandroidapp.data.repositoryImplementation.RecipeRepo
 import com.example.recipemvvmandroidapp.data.repositoryImplementation.recipeRepository
 import com.example.recipemvvmandroidapp.dependency.Dependency
 
-class GetRecipeListUseCase(
+class GetRecipeDetailUseCase(
     private val recipeRepository: RecipeRepository
 ) {
-    data class RecipeForCardView(
-        val id: Int,
+    data class RecipeForDetailView(
         val title: String,
-        val featuredImage: String
+        val featuredImage: String,
+        val ingredients: List<String>
     )
 
     suspend fun execute(
-        page: Int,
-        query: String
-    ): UseCaseResult<List<RecipeForCardView>>
+        id: Int
+    ): UseCaseResult<RecipeForDetailView>
     {
         return try{
             UseCaseResult.Success(recipeRepository
-                .searchForRecipes(page, query)
-                .map{
-                    RecipeForCardView(
-                        it.id,
+                .getRecipeById(id)
+                .let{
+                    RecipeForDetailView(
                         it.title,
-                        it.featuredImage
+                        it.featuredImage,
+                        it.ingredients
                     )
-                })
+                }
+            )
         } catch(exception: Exception){
             UseCaseResult.Error(exception)
         }
     }
 }
 
-fun Dependency.UseCase.getRecipeListUseCase(): GetRecipeListUseCase
+fun Dependency.UseCase.getRecipeDetailUseCase(): GetRecipeDetailUseCase
 {
-    return GetRecipeListUseCase(repository.recipeRepository())
+    return GetRecipeDetailUseCase(repository.recipeRepository())
 }

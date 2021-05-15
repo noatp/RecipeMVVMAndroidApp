@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipemvvmandroidapp.dependency.Dependency
 import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeListUseCase
+import com.example.recipemvvmandroidapp.domain.useCase.UseCaseResult
 import com.example.recipemvvmandroidapp.domain.useCase.getRecipeListUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,7 +50,7 @@ class SearchRecipeViewModel(
                 )
             when(searchResult)
             {
-                is GetRecipeListUseCase.Result.Success -> {
+                is UseCaseResult.Success -> {
                     recipeListForCardView.value = searchResult.resultValue.map{
                         RecipeForCardViewInViewModel(
                             id = it.id,
@@ -58,7 +59,7 @@ class SearchRecipeViewModel(
                         )
                     }
                 }
-                is GetRecipeListUseCase.Result.Error -> Log.d("Debug: SearchRecipeViewModel",
+                is UseCaseResult.Error -> Log.d("Debug: SearchRecipeViewModel",
                     searchResult.exception.toString()
                 )
             }

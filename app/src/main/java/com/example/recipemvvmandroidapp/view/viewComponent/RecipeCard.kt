@@ -46,6 +46,18 @@ fun RecipeCard(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
+                when (painter.loadState) {
+                    ImageLoadState.Loading -> {
+                        // Display a circular progress indicator whilst loading
+                        CircularProgressIndicator(
+                            Modifier
+                                .align(Alignment.CenterHorizontally)
+                        )
+                    }
+                    is ImageLoadState.Error -> {
+                        // If you wish to display some content if the request fails
+                    }
+                }
                 Image(
                     painter = painter,
                     contentDescription = "random image",
@@ -56,15 +68,7 @@ fun RecipeCard(
                         .clip(Shapes.medium),
                     contentScale = ContentScale.FillWidth
                 )
-                when (painter.loadState) {
-                    ImageLoadState.Loading -> {
-                        // Display a circular progress indicator whilst loading
-                        CircularProgressIndicator(Modifier.align(Alignment.CenterHorizontally))
-                    }
-                    is ImageLoadState.Error -> {
-                        // If you wish to display some content if the request fails
-                    }
-                }
+
                 Text(
                     text = recipeName,
                     modifier = Modifier
