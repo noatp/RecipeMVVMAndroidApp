@@ -2,7 +2,9 @@ package com.example.recipemvvmandroidapp.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -30,53 +32,63 @@ fun RecipeDetailView(
     recipe:  RecipeDetailViewModel.RecipeForDetailViewInViewModel
 ){
     Surface() {
-        Column(
-            modifier = Modifier.fillMaxSize()
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
             //Image
-            when (painter.loadState) {
-                is ImageLoadState.Success -> {
-                    Image(
-                        painter = painter,
-                        contentDescription = "${recipe.title}",
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .fillMaxWidth()
-                            .height(250.dp)
-                            .clip(Shapes.medium),
-                        contentScale = ContentScale.FillWidth
-                    )
-                }
-                // for preview
-                ImageLoadState.Empty -> {
-                    Image(
-                        painter = painterResource(id = R.drawable.blank),
-                        contentDescription = "loadplaceholder",
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .fillMaxWidth()
-                            .height(250.dp)
-                            .clip(Shapes.medium)
-                    )
-                }
-                else -> {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .height(250.dp)
-                            .fillMaxWidth(),
-                    ){
-                        CircularProgressIndicator(
-                            color = LightBackground
+            item{
+                when (painter.loadState) {
+                    is ImageLoadState.Success -> {
+                        Image(
+                            painter = painter,
+                            contentDescription = "${recipe.title}",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(250.dp)
+                                .clip(Shapes.medium),
+                            contentScale = ContentScale.FillWidth
                         )
                     }
+                    // for preview
+                    ImageLoadState.Empty -> {
+                        Image(
+                            painter = painterResource(id = R.drawable.blank),
+                            contentDescription = "loadplaceholder",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(250.dp)
+                                .clip(Shapes.medium)
+                        )
+                    }
+                    else -> {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .height(250.dp)
+                                .fillMaxWidth(),
+                        ){
+                            CircularProgressIndicator(
+                                color = LightBackground
+                            )
+                        }
+                    }
                 }
-            }
-            //Title
-            Text(recipe.title)
-            //Ingredients
-            recipe.ingredients.map {
-                Text(it)
+                Spacer(modifier = Modifier.height(8.dp))
+                //Title
+                Text(
+                    text = recipe.title,
+                    style = MaterialTheme.typography.h4
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                //Ingredients
+                recipe.ingredients.map {
+                    Text(
+                        text = "- $it",
+                        style = MaterialTheme.typography.body1
+                    )
+                }
             }
         }
     }
