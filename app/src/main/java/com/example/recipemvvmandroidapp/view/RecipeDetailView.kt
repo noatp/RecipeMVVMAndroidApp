@@ -29,7 +29,7 @@ import kotlinx.coroutines.Dispatchers
 @Composable
 fun RecipeDetailView(
     painter: LoadPainter<Any>,
-    recipe:  RecipeDetailViewModel.RecipeForDetailViewInViewModel
+    recipe:  RecipeDetailViewModel.RecipeForDetailView
 ){
     Surface() {
         LazyColumn(
@@ -126,7 +126,7 @@ fun PreviewRecipeDetailView()
 
     RecipeDetailView(
         painter = painter,
-        recipe = RecipeDetailViewModel.RecipeForDetailViewInViewModel(
+        recipe = RecipeDetailViewModel.RecipeForDetailView(
             title = "This is a title",
             featuredImage = "url",
             ingredients = listOf("ingredient1", "ingredient2", "ingredient3")

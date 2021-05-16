@@ -19,14 +19,14 @@ class RecipeDetailViewModel(
         var instance: RecipeDetailViewModel? = null
     }
 
-    data class RecipeForDetailViewInViewModel(
+    data class RecipeForDetailView(
         val title: String,
         val featuredImage: String,
         val ingredients: List<String>
     )
 
-    var recipeForDetailView: MutableState<RecipeForDetailViewInViewModel> = mutableStateOf(
-        RecipeForDetailViewInViewModel(
+    var recipeForDetailView: MutableState<RecipeForDetailView> = mutableStateOf(
+        RecipeForDetailView(
             title = "",
             featuredImage = "",
             ingredients = listOf()
@@ -38,7 +38,7 @@ class RecipeDetailViewModel(
             when(val result = getRecipeDetailUseCase.execute(recipeId))
             {
                 is UseCaseResult.Success -> recipeForDetailView.value = result.resultValue.let{
-                    RecipeForDetailViewInViewModel(
+                    RecipeForDetailView(
                         title = it.title,
                         featuredImage = it.featuredImage,
                         ingredients = it.ingredients

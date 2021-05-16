@@ -23,7 +23,7 @@ import com.example.recipemvvmandroidapp.viewModel.SearchRecipeViewModel
 fun SearchRecipeView(
     searchBarText: String,
     onSearchTextChanged: (String) -> Unit,
-    recipeList: List<SearchRecipeViewModel.RecipeForCardViewInViewModel>,
+    recipeList: List<SearchRecipeViewModel.RecipeForCardView>,
     onSearch: () -> Unit,
     onClickRecipeCard: (Int) -> Unit
 ){
@@ -85,7 +85,7 @@ fun PreviewSearchRecipeView()
     SearchRecipeView(
         searchBarText = "chicken",
         onSearchTextChanged = { /*TODO*/ },
-        recipeList = listOf(SearchRecipeViewModel.RecipeForCardViewInViewModel(
+        recipeList = listOf(SearchRecipeViewModel.RecipeForCardView(
             id = 123,
             title = "New recipe",
             featuredImage = "url"

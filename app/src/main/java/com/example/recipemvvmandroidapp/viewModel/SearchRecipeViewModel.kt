@@ -21,7 +21,7 @@ class SearchRecipeViewModel(
         var instance: SearchRecipeViewModel? = null
     }
 
-    data class RecipeForCardViewInViewModel(
+    data class RecipeForCardView(
         val id: Int,
         val title: String,
         val featuredImage: String
@@ -32,7 +32,7 @@ class SearchRecipeViewModel(
     val searchBarText: LiveData<String> = _searchBarText
 
     //data for lazy list
-    var recipeListForCardView: MutableState<List<RecipeForCardViewInViewModel>> = mutableStateOf(listOf())
+    var recipeListForCardView: MutableState<List<RecipeForCardView>> = mutableStateOf(listOf())
 
     private var pageIndex: Int = 1
 
@@ -52,7 +52,7 @@ class SearchRecipeViewModel(
             {
                 is UseCaseResult.Success -> {
                     recipeListForCardView.value = searchResult.resultValue.map{
-                        RecipeForCardViewInViewModel(
+                        RecipeForCardView(
                             id = it.id,
                             title = it.title,
                             featuredImage = it.featuredImage
