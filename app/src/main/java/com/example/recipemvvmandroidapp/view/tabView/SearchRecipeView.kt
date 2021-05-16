@@ -27,36 +27,29 @@ fun SearchRecipeView(
     onSearch: () -> Unit,
     onClickRecipeCard: (Int) -> Unit
 ){
-    Scaffold(
-        modifier = Modifier,
-        topBar = {
-        },
-        content = {
-            Column(
-                modifier = Modifier
-            )
-            {
-                SearchBar(
-                    textContent = searchBarText,
-                    onValueChange = onSearchTextChanged,
-                    labelContent = "Search recipe",
-                    onSearch = onSearch
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                LazyColumn() {
-                    itemsIndexed(items = recipeList){ index, recipe ->
-                        RecipeCard(
-                            recipeName = recipe.title,
-                            recipeImageUrl = recipe.featuredImage,
-                            onClick = {
-                                onClickRecipeCard(recipe.id)
-                            }
-                        )
+    Column(
+        modifier = Modifier
+    )
+    {
+        SearchBar(
+            textContent = searchBarText,
+            onValueChange = onSearchTextChanged,
+            labelContent = "Search recipe",
+            onSearch = onSearch
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        LazyColumn() {
+            itemsIndexed(items = recipeList){ index, recipe ->
+                RecipeCard(
+                    recipeName = recipe.title,
+                    recipeImageUrl = recipe.featuredImage,
+                    onClick = {
+                        onClickRecipeCard(recipe.id)
                     }
-                }
+                )
             }
         }
-    )
+    }
 }
 
 @Composable

@@ -20,7 +20,6 @@ import com.example.recipemvvmandroidapp.router.ViewDestination
 import com.example.recipemvvmandroidapp.view.tabView.DiscoveryView
 import com.example.recipemvvmandroidapp.view.tabView.SearchRecipeView
 import com.example.recipemvvmandroidapp.view.viewComponent.BottomNavBar
-import com.example.recipemvvmandroidapp.viewModel.HomeViewModel
 import com.example.recipemvvmandroidapp.viewModel.homeViewModel
 
 @Composable
@@ -33,7 +32,6 @@ fun HomeView(
 {
     Scaffold (
         modifier = Modifier,
-        topBar = {/*TODO*/},
         bottomBar = { BottomAppBar(
             backgroundColor = Color.White,
             contentPadding = PaddingValues(0.dp)
