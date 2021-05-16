@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -86,6 +87,7 @@ fun CreateRecipeCard(
                         .padding(8.dp),
                     color = DarkBackground,
                     maxLines = 1,
+                    style = MaterialTheme.typography.body1
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }

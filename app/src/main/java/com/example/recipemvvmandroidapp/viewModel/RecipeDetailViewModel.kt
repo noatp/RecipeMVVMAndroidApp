@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import com.example.recipemvvmandroidapp.dependency.Dependency
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.recipemvvmandroidapp.domain.model.Recipe
 import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeDetailUseCase
 import com.example.recipemvvmandroidapp.domain.useCase.UseCaseResult
 import com.example.recipemvvmandroidapp.domain.useCase.getRecipeDetailUseCase
