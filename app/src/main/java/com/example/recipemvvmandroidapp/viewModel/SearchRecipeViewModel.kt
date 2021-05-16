@@ -1,12 +1,11 @@
 package com.example.recipemvvmandroidapp.viewModel
 
 import android.util.Log
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recipemvvmandroidapp.dependency.Dependency
 import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeListUseCase
 import com.example.recipemvvmandroidapp.domain.useCase.UseCaseResult
@@ -17,10 +16,6 @@ import kotlinx.coroutines.launch
 class SearchRecipeViewModel(
     private val getRecipeListUseCase: GetRecipeListUseCase
 ): ViewModel() {
-    companion object{
-        var instance: SearchRecipeViewModel? = null
-    }
-
     data class RecipeForCardView(
         val id: Int,
         val title: String,
@@ -67,8 +62,22 @@ class SearchRecipeViewModel(
     }
 }
 
+class SearchRecipeViewModelFactory(
+    private val getRecipeListUseCase: GetRecipeListUseCase
+): ViewModelProvider.Factory{
+    override fun <T : ViewModel?> create(
+        modelClass: Class<T>
+    ): T {
+        return SearchRecipeViewModel(getRecipeListUseCase) as T
+    }
+}
+
+@Composable
 fun Dependency.ViewModel.searchRecipeViewModel(): SearchRecipeViewModel{
-    if(SearchRecipeViewModel.instance == null)
-        SearchRecipeViewModel.instance = SearchRecipeViewModel(useCase.getRecipeListUseCase())
-    return SearchRecipeViewModel.instance!!
+    return viewModel(
+        key = "SearchRecipeViewModel",
+        factory = SearchRecipeViewModelFactory(
+            useCase.getRecipeListUseCase()
+        )
+    )
 }

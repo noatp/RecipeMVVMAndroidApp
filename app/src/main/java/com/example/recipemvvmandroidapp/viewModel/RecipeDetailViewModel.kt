@@ -1,11 +1,14 @@
 package com.example.recipemvvmandroidapp.viewModel
 
 import android.util.Log
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.example.recipemvvmandroidapp.dependency.Dependency
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeDetailUseCase
 import com.example.recipemvvmandroidapp.domain.useCase.UseCaseResult
 import com.example.recipemvvmandroidapp.domain.useCase.getRecipeDetailUseCase
@@ -15,10 +18,6 @@ import kotlinx.coroutines.launch
 class RecipeDetailViewModel(
     private val getRecipeDetailUseCase: GetRecipeDetailUseCase
 ): ViewModel(){
-    companion object{
-        var instance: RecipeDetailViewModel? = null
-    }
-
     data class RecipeForDetailView(
         val title: String,
         val featuredImage: String,
@@ -52,12 +51,24 @@ class RecipeDetailViewModel(
     }
 }
 
+class RecipeDetailViewModelFactory(
+    private val getRecipeDetailUseCase: GetRecipeDetailUseCase
+): ViewModelProvider.Factory{
+    override fun <T : ViewModel?> create(
+        modelClass: Class<T>
+    ): T {
+        return RecipeDetailViewModel(getRecipeDetailUseCase) as T
+    }
+}
+
+@Composable
 fun Dependency.ViewModel.recipeDetailViewModel(): RecipeDetailViewModel
 {
-    if(RecipeDetailViewModel.instance == null)
-    {
-        RecipeDetailViewModel.instance = RecipeDetailViewModel(useCase.getRecipeDetailUseCase())
-    }
-    return RecipeDetailViewModel.instance!!
+    return viewModel(
+        key = "RecipeDetailViewModel",
+        factory = RecipeDetailViewModelFactory(
+            getRecipeDetailUseCase = useCase.getRecipeDetailUseCase()
+        )
+    )
 }
 
