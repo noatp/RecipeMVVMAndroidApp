@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 enum class TabViewDestination(
     val route: String,
-    val icon: ImageVector
+    val icon: ImageVector,
 ){
     Search(route = "search", icon = Icons.Outlined.Search),
     Discovery(route = "discovery", icon = Icons.Outlined.Lightbulb)
