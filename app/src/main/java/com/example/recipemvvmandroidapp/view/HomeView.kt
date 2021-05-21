@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -51,11 +51,11 @@ fun CreateHomeView(
                         when(tabViewDestination)
                         {
                             TabViewDestination.Search -> {
-                                val viewModel = hiltNavGraphViewModel<SearchRecipeViewModel>(backStackEntry = it)
+                                val viewModel = hiltViewModel<SearchRecipeViewModel>(backStackEntry = it)
                                 SearchRecipeView(router, viewModel)
                             }
                             TabViewDestination.Discovery -> {
-                                val viewModel = hiltNavGraphViewModel<DiscoveryViewModel>(backStackEntry = it)
+                                val viewModel = hiltViewModel<DiscoveryViewModel>(backStackEntry = it)
                                 DiscoveryView(router, viewModel)
                             }
                         }
@@ -79,7 +79,7 @@ fun CreateHomeView(
                 when(viewDestination)
                 {
                     ViewDestination.RecipeDetailView -> {
-                        val viewModel = hiltNavGraphViewModel<RecipeDetailViewModel>(backStackEntry = it)
+                        val viewModel = hiltViewModel<RecipeDetailViewModel>(backStackEntry = it)
                         RecipeDetailView(
                             recipeId = it.arguments?.getInt(viewDestination.arguments.first)!!,
                             recipeDetailViewModel = viewModel
