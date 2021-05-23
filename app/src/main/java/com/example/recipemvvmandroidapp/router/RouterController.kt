@@ -1,6 +1,7 @@
 package com.example.recipemvvmandroidapp.router
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -46,8 +47,14 @@ class RouterController(
     }
 
     @Composable
-    fun AttachNavHostForTabController(){
-        NavHost(navController = tabController, startDestination = TabViewDestination.Search.route)
+    fun AttachNavHostForTabController(
+        modifier: Modifier = Modifier
+    ){
+        NavHost(
+            navController = tabController,
+            startDestination = TabViewDestination.Search.route,
+            modifier = modifier
+        )
         {
             TabViewDestination.values().map { tabViewDestination: TabViewDestination ->
                 composable(tabViewDestination.route) {

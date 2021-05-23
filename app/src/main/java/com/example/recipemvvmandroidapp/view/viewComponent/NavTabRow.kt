@@ -92,10 +92,17 @@ private fun NavTab(
                 indication = null
             )
     ) {
-        Icon(imageVector = icon, contentDescription = text, tint = tabTintColor)
+        Icon(
+            imageVector = icon,
+            contentDescription = text,
+            tint = tabTintColor,
+        )
         if (selected) {
             Spacer(Modifier.width(12.dp))
-            Text(text, color = tabTintColor)
+            Text(
+                text = text,
+                color = tabTintColor,
+                style = MaterialTheme.typography.subtitle1)
         }
     }
 }

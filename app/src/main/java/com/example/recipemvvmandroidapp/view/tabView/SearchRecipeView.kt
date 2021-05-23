@@ -3,6 +3,7 @@ package com.example.recipemvvmandroidapp.view.tabView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
@@ -25,7 +26,7 @@ fun CreateSearchRecipeView(
     onClickRecipeCard: (Int) -> Unit
 ){
     Column(
-        modifier = Modifier
+        modifier = Modifier.padding(12.dp)
     )
     {
         SearchBar(
@@ -34,8 +35,8 @@ fun CreateSearchRecipeView(
             labelContent = "Search recipe",
             onSearch = onSearch
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        LazyColumn() {
+        Spacer(modifier = Modifier.height(12.dp))
+        LazyColumn {
             itemsIndexed(items = recipeList){ index, recipe ->
                 RecipeCard(
                     recipeName = recipe.title,
@@ -44,6 +45,7 @@ fun CreateSearchRecipeView(
                         onClickRecipeCard(recipe.id)
                     }
                 )
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }
@@ -55,7 +57,6 @@ fun SearchRecipeView(
     searchRecipeViewModel: SearchRecipeViewModel
 )
 {
-//    val searchRecipeViewModel: SearchRecipeViewModel = viewModel()
     val searchBarText: String by searchRecipeViewModel.searchBarText.observeAsState(initial = "")
     val recipeList = searchRecipeViewModel.recipeListForCardView.value
     CreateSearchRecipeView(
@@ -68,8 +69,6 @@ fun SearchRecipeView(
         }
     )
 }
-
-
 
 @Preview
 @Composable

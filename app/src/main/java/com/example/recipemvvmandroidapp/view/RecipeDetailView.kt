@@ -33,7 +33,7 @@ fun CreateRecipeDetailView(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(12.dp)
         ) {
             //Image
             item{
@@ -67,9 +67,7 @@ fun CreateRecipeDetailView(
                                 .height(250.dp)
                                 .fillMaxWidth(),
                         ){
-                            CircularProgressIndicator(
-                                color = LightBackground
-                            )
+                            CircularProgressIndicator()
                         }
                     }
                 }

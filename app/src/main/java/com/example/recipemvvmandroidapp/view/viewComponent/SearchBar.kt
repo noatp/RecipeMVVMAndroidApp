@@ -1,23 +1,16 @@
 package com.example.recipemvvmandroidapp.view.viewComponent
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.example.recipemvvmandroidapp.ui.theme.*
 
 @Composable
 fun SearchBar(
@@ -26,10 +19,6 @@ fun SearchBar(
     labelContent: String,
     modifier: Modifier = Modifier,
     singleLine: Boolean = true,
-    focusedIndicatorColor: Color = DarkBackground,
-    cursorColor: Color = DarkBackground,
-    focusedLabelColor: Color = LightBackground,
-    unfocusedLabelColor: Color = DarkBackground,
     capitalization: KeyboardCapitalization = KeyboardCapitalization.None,
     autoCorrect: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -43,9 +32,9 @@ fun SearchBar(
         value = textContent,
         onValueChange = { onValueChange(it) },
         modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        label = { Text(text = labelContent) },
+            .fillMaxWidth(),
+        textStyle = MaterialTheme.typography.body1,
+        label = { Text(text = labelContent, style = MaterialTheme.typography.subtitle1) },
         visualTransformation = visualTransformation,
         keyboardOptions = KeyboardOptions(
             capitalization = capitalization,
@@ -61,10 +50,9 @@ fun SearchBar(
         leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search Icon") },
         singleLine = singleLine,
         colors = TextFieldDefaults.textFieldColors(
-            focusedIndicatorColor = focusedIndicatorColor,
-            cursorColor = cursorColor,
-            focusedLabelColor = focusedLabelColor,
-            unfocusedLabelColor = unfocusedLabelColor,
+            focusedIndicatorColor = MaterialTheme.colors.onSurface,
+            cursorColor = MaterialTheme.colors.onBackground,
+            focusedLabelColor = MaterialTheme.colors.onBackground
         )
     )
 }
