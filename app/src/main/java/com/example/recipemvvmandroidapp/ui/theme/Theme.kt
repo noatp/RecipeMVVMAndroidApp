@@ -6,31 +6,10 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
-private val DarkColorPalette = darkColors(
-    primary = DarkBackground,
-    primaryVariant = LightBackground,
-    secondary = DarkBackgroundVariant
-)
-
-private val LightColorPalette = lightColors(
-    primary = DarkBackground,
-    primaryVariant = LightBackground,
-    secondary = DarkBackgroundVariant,
-)
-
 @Composable
-fun RecipeMVVMTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
-) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
-    }
-
+fun RecipeMVVMTheme(content: @Composable() () -> Unit) {
     MaterialTheme(
-        colors = colors,
+        colors = DarkColorPalette,
         typography = Typography,
         shapes = Shapes,
         content = content
