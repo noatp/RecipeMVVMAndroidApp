@@ -2,6 +2,7 @@ package com.example.recipemvvmandroidapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.navigation.compose.rememberNavController
 import com.example.recipemvvmandroidapp.router.RouterController
@@ -23,4 +24,13 @@ class MainActivity : ComponentActivity() {
             HomeView(router = router)
         }
     }
+
+    override fun onBackPressed() {
+        if(router.popOffModal())
+        {
+            return
+        }
+        super.onBackPressed()
+    }
 }
+
