@@ -7,7 +7,7 @@ import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
 
-class RecipeNetworkService(): RecipeNetworkServiceInterface {
+class RecipeNetworkService: RecipeNetworkServiceInterface {
     private val authToken = "Token 9c8b06d329136da358c2d00e76946b0111ce2c48"
     private val apiUrl = "https://food2fork.ca/api/recipe"
 

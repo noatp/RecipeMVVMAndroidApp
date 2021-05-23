@@ -1,20 +1,21 @@
 package com.example.recipemvvmandroidapp.viewModel
 
 import android.util.Log
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import com.example.recipemvvmandroidapp.dependency.Dependency
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeDetailUseCase
 import com.example.recipemvvmandroidapp.domain.useCase.UseCaseResult
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.example.recipemvvmandroidapp.domain.useCase.getRecipeDetailUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class RecipeDetailViewModel @Inject constructor(
+class RecipeDetailViewModel(
     private val getRecipeDetailUseCase: GetRecipeDetailUseCase
 ): ViewModel(){
     data class RecipeForDetailView(
@@ -59,3 +60,15 @@ class RecipeDetailViewModelFactory(
         return RecipeDetailViewModel(getRecipeDetailUseCase) as T
     }
 }
+
+@Composable
+fun Dependency.ViewModel.recipeDetailViewModel(): RecipeDetailViewModel
+{
+    return viewModel(
+        key = "RecipeDetailViewModel",
+        factory = RecipeDetailViewModelFactory(
+            getRecipeDetailUseCase = useCase.getRecipeDetailUseCase()
+        )
+    )
+}
+
