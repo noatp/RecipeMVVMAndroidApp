@@ -1,6 +1,8 @@
 package com.example.recipemvvmandroidapp.domain.useCase
 
 import com.example.recipemvvmandroidapp.data.repositoryImplementation.RecipeRepository
+import com.example.recipemvvmandroidapp.data.repositoryImplementation.recipeRepository
+import com.example.recipemvvmandroidapp.dependency.Dependency
 import com.example.recipemvvmandroidapp.domain.model.Recipe
 
 class GetRecipeListUseCase(
@@ -19,4 +21,9 @@ class GetRecipeListUseCase(
             UseCaseResult.Error(exception)
         }
     }
+}
+
+fun Dependency.UseCase.getRecipeListUseCase(): GetRecipeListUseCase
+{
+    return GetRecipeListUseCase(repository.recipeRepository())
 }

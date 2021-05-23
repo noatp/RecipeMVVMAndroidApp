@@ -2,6 +2,9 @@ package com.example.recipemvvmandroidapp.data.repositoryImplementation
 
 import com.example.recipemvvmandroidapp.data.remote.RecipeNetworkService
 import com.example.recipemvvmandroidapp.data.remote.util.RecipeDTOMapper
+import com.example.recipemvvmandroidapp.data.remote.util.recipeDTOMapper
+import com.example.recipemvvmandroidapp.dependency.Dependency
+import com.example.recipemvvmandroidapp.dependency.recipeService
 import com.example.recipemvvmandroidapp.domain.model.Recipe
 import com.example.recipemvvmandroidapp.domain.repositoryInterface.RecipeRepositoryInterface
 
@@ -22,4 +25,12 @@ class RecipeRepository(
                 .searchForRecipes(page, query)
             )
     }
+}
+
+fun Dependency.Repository.recipeRepository(): RecipeRepository
+{
+    return RecipeRepository(
+        service.recipeService(),
+        service.recipeDTOMapper()
+    )
 }

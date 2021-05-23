@@ -16,16 +16,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.recipemvvmandroidapp.R
+import com.example.recipemvvmandroidapp.dependency.Dependency
 import com.example.recipemvvmandroidapp.ui.theme.LightBackground
 import com.example.recipemvvmandroidapp.ui.theme.Shapes
 import com.example.recipemvvmandroidapp.viewModel.RecipeDetailViewModel
+import com.example.recipemvvmandroidapp.viewModel.recipeDetailViewModel
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
 import com.google.accompanist.imageloading.LoadPainter
 import kotlinx.coroutines.Dispatchers
 
 @Composable
-fun CreateRecipeDetailView(
+fun RecipeDetailView(
     painter: LoadPainter<Any>,
     recipe:  RecipeDetailViewModel.RecipeForDetailView
 ){
@@ -93,12 +95,9 @@ fun CreateRecipeDetailView(
 }
 
 @Composable
-fun RecipeDetailView(
-    recipeId: Int,
-    recipeDetailViewModel: RecipeDetailViewModel
-)
+fun Dependency.View.RecipeDetailView(recipeId: Int)
 {
-//    val recipeDetailViewModel: RecipeDetailViewModel = viewModel()
+    val recipeDetailViewModel = viewModel.recipeDetailViewModel()
     val recipe = recipeDetailViewModel.recipeForDetailView.value
     val painter = rememberCoilPainter(
         request = recipe.featuredImage,
@@ -110,7 +109,7 @@ fun RecipeDetailView(
 
     recipeDetailViewModel.onLaunch(recipeId)
 
-    CreateRecipeDetailView(
+    RecipeDetailView(
         painter = painter,
         recipe = recipe
     )
@@ -125,7 +124,7 @@ fun PreviewRecipeDetailView()
         previewPlaceholder = R.drawable.load_placeholder
     )
 
-    CreateRecipeDetailView(
+    RecipeDetailView(
         painter = painter,
         recipe = RecipeDetailViewModel.RecipeForDetailView(
             title = "This is a title",

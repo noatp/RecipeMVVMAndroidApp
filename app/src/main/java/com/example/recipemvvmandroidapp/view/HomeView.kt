@@ -6,28 +6,28 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navArgument
+import androidx.navigation.compose.rememberNavController
+import com.example.recipemvvmandroidapp.dependency.Dependency
 import com.example.recipemvvmandroidapp.router.RouterController
 import com.example.recipemvvmandroidapp.router.TabViewDestination
 import com.example.recipemvvmandroidapp.router.ViewDestination
 import com.example.recipemvvmandroidapp.view.tabView.DiscoveryView
 import com.example.recipemvvmandroidapp.view.tabView.SearchRecipeView
-import com.example.recipemvvmandroidapp.view.viewComponent.NavTabRow
-import com.example.recipemvvmandroidapp.viewModel.DiscoveryViewModel
-import com.example.recipemvvmandroidapp.viewModel.RecipeDetailViewModel
-import com.example.recipemvvmandroidapp.viewModel.SearchRecipeViewModel
+import com.example.recipemvvmandroidapp.view.viewComponent.BottomNavBar
+import com.example.recipemvvmandroidapp.viewModel.homeViewModel
 
 @Composable
-fun CreateHomeView(
-    tabs: List<TabViewDestination>,
-    currentTab: TabViewDestination,
+fun HomeView(
+    tabSelected: TabViewDestination,
     router: RouterController,
+    updateSelectedTab: (TabViewDestination) -> Unit,
+    view: Dependency.View
 )
 {
     Scaffold (
@@ -36,9 +36,9 @@ fun CreateHomeView(
             backgroundColor = Color.White,
             contentPadding = PaddingValues(0.dp)
         ) {
-            NavTabRow(
-                tabs = tabs,
-                currentTab = currentTab,
+            BottomNavBar(
+                tabs = TabViewDestination.values(),
+                tabSelected = tabSelected,
                 onTabSelected = {router.navigateBetweenTabs(it)}
             )
         } },
@@ -47,16 +47,11 @@ fun CreateHomeView(
             {
                 TabViewDestination.values().map { tabViewDestination: TabViewDestination ->
                     composable(tabViewDestination.route) {
+                        updateSelectedTab(tabViewDestination)
                         when(tabViewDestination)
                         {
-                            TabViewDestination.Search -> {
-                                val viewModel = hiltViewModel<SearchRecipeViewModel>(backStackEntry = it)
-                                SearchRecipeView(router, viewModel)
-                            }
-                            TabViewDestination.Discovery -> {
-                                val viewModel = hiltViewModel<DiscoveryViewModel>(backStackEntry = it)
-                                DiscoveryView(router, viewModel)
-                            }
+                            TabViewDestination.Search -> view.SearchRecipeView(router)
+                            TabViewDestination.Discovery -> view.DiscoveryView(router)
                         }
                     }
                 }
@@ -77,13 +72,8 @@ fun CreateHomeView(
             ) {
                 when(viewDestination)
                 {
-                    ViewDestination.RecipeDetailView -> {
-                        val viewModel = hiltViewModel<RecipeDetailViewModel>(backStackEntry = it)
-                        RecipeDetailView(
-                            recipeId = it.arguments?.getInt(viewDestination.arguments.first)!!,
-                            recipeDetailViewModel = viewModel
-                        )
-                    }
+                    ViewDestination.RecipeDetailView
+                    -> view.RecipeDetailView(it.arguments?.getInt(viewDestination.arguments.first)!!)
                 }
             }
         }
@@ -91,14 +81,16 @@ fun CreateHomeView(
 }
 
 @Composable
-fun HomeView(router: RouterController)
+fun Dependency.View.HomeView(router: RouterController)
 {
-    val tabBackStackEntry = router.tabController.currentBackStackEntryAsState()
-    val tabs = TabViewDestination.values().toList()
-    val currentTab = TabViewDestination.getTabFromRoute(tabBackStackEntry.value?.destination?.route)
-    CreateHomeView(
-        currentTab = currentTab,
+    val homeViewModel = viewModel.homeViewModel()
+    val tabSelected = homeViewModel.selectedTab.value
+    HomeView(
+        tabSelected = tabSelected,
         router = router,
-        tabs = tabs
+        updateSelectedTab = {tabViewDestination ->
+            homeViewModel.updateSelectedTab(tabViewDestination)
+        },
+        view = this
     )
 }
