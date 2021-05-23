@@ -1,21 +1,20 @@
 package com.example.recipemvvmandroidapp.viewModel
 
 import android.util.Log
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.recipemvvmandroidapp.dependency.Dependency
 import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeListUseCase
 import com.example.recipemvvmandroidapp.domain.useCase.UseCaseResult
-import com.example.recipemvvmandroidapp.domain.useCase.getRecipeListUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DiscoveryViewModel(
+@HiltViewModel
+class DiscoveryViewModel @Inject constructor(
     private val getRecipeListUseCase: GetRecipeListUseCase
 ): ViewModel(){
     data class RecipeForCardView(
@@ -60,14 +59,4 @@ class DiscoveryViewModelFactory(
     ): T {
         return DiscoveryViewModel(getRecipeListUseCase) as T
     }
-}
-
-@Composable
-fun Dependency.ViewModel.discoveryViewModel(): DiscoveryViewModel{
-    return viewModel(
-        key = "DiscoveryViewModel",
-        factory = DiscoveryViewModelFactory(
-            useCase.getRecipeListUseCase()
-        )
-    )
 }

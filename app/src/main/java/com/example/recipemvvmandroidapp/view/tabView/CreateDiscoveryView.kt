@@ -5,15 +5,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.recipemvvmandroidapp.dependency.Dependency
 import com.example.recipemvvmandroidapp.router.RouterController
 import com.example.recipemvvmandroidapp.view.viewComponent.RecipeCard
 import com.example.recipemvvmandroidapp.viewModel.DiscoveryViewModel
-import com.example.recipemvvmandroidapp.viewModel.SearchRecipeViewModel
-import com.example.recipemvvmandroidapp.viewModel.discoveryViewModel
 
 @Composable
-fun DiscoveryView(
+fun CreateDiscoveryView(
     recipeList: List<DiscoveryViewModel.RecipeForCardView>,
     onClickRecipeCard: (Int) -> Unit
 )
@@ -32,14 +29,15 @@ fun DiscoveryView(
 }
 
 @Composable
-fun Dependency.View.DiscoveryView(
-    router: RouterController
+fun DiscoveryView(
+    router: RouterController,
+    discoveryViewModel: DiscoveryViewModel
 )
 {
-    val discoveryViewModel: DiscoveryViewModel = viewModel.discoveryViewModel()
+//    val discoveryViewModel: DiscoveryViewModel = viewModel()
     val recipeList = discoveryViewModel.recipeListForCardView.value
     discoveryViewModel.onLaunch()
-    DiscoveryView(
+    CreateDiscoveryView(
         recipeList = recipeList,
         onClickRecipeCard = {recipeId: Int ->
             router.navigateToRecipeDetailView(recipeId)
@@ -51,7 +49,7 @@ fun Dependency.View.DiscoveryView(
 @Composable
 fun PreviewDiscoveryView()
 {
-    DiscoveryView(
+    CreateDiscoveryView(
         recipeList = listOf(
             DiscoveryViewModel.RecipeForCardView(
             id = 123,
