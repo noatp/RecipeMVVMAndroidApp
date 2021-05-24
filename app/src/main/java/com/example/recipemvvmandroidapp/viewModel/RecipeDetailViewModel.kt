@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeDetailUseCase
 import com.example.recipemvvmandroidapp.domain.useCase.UseCaseResult
@@ -50,12 +49,12 @@ class RecipeDetailViewModel @Inject constructor(
     }
 }
 
-class RecipeDetailViewModelFactory(
-    private val getRecipeDetailUseCase: GetRecipeDetailUseCase
-): ViewModelProvider.Factory{
-    override fun <T : ViewModel?> create(
-        modelClass: Class<T>
-    ): T {
-        return RecipeDetailViewModel(getRecipeDetailUseCase) as T
-    }
-}
+//class RecipeDetailViewModelFactory(
+//    private val getRecipeDetailUseCase: GetRecipeDetailUseCase
+//): ViewModelProvider.Factory{
+//    override fun <T : ViewModel?> create(
+//        modelClass: Class<T>
+//    ): T {
+//        return RecipeDetailViewModel(getRecipeDetailUseCase) as T
+//    }
+//}

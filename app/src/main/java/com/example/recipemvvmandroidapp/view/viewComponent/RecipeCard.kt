@@ -50,17 +50,17 @@ fun CreateRecipeCard(
                         contentScale = ContentScale.FillWidth
                     )
                 }
-                // for preview
-                ImageLoadState.Empty -> {
-                    Image(
-                        painter = painterResource(id = R.drawable.blank),
-                        contentDescription = "loadplaceholder",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .clip(Shapes.medium)
-                    )
-                }
+//                // for preview
+//                ImageLoadState.Empty -> {
+//                    Image(
+//                        painter = painterResource(id = R.drawable.blank),
+//                        contentDescription = "loadplaceholder",
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .height(200.dp)
+//                            .clip(Shapes.medium)
+//                    )
+//                }
                 else -> {
                     Box(
                         contentAlignment = Alignment.Center,

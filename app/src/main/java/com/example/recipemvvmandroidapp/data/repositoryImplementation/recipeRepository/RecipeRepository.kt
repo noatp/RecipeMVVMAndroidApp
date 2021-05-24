@@ -22,7 +22,10 @@ class RecipeRepository(
 
     override fun searchForRecipes(query: String): Flow<PagingData<Recipe>> {
         return Pager(
-            config = PagingConfig(pageSize = API_PAGE_SIZE, enablePlaceholders = false),
+            config = PagingConfig(
+                pageSize = API_PAGE_SIZE,
+                enablePlaceholders = false
+            ),
             pagingSourceFactory = {
                 RecipePagingSource(
                 recipeService = recipeService,

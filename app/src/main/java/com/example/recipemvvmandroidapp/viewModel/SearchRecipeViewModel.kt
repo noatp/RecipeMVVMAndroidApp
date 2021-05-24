@@ -17,12 +17,6 @@ import javax.inject.Inject
 class SearchRecipeViewModel @Inject constructor(
     private val getRecipeListUseCase: GetRecipeListUseCase
 ): ViewModel() {
-    data class RecipeForCardView(
-        val id: Int,
-        val title: String,
-        val featuredImage: String
-    )
-
     //data for search bar
     private val _searchBarText = MutableLiveData("")
     val searchBarText: LiveData<String> = _searchBarText

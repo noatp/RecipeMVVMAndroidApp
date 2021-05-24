@@ -17,12 +17,6 @@ import javax.inject.Inject
 class DiscoveryViewModel @Inject constructor(
     private val getRecipeListUseCase: GetRecipeListUseCase
 ): ViewModel(){
-    data class RecipeForCardView(
-        val id: Int,
-        val title: String,
-        val featuredImage: String
-    )
-
     var pagingFlow: MutableState<Flow<PagingData<Recipe>>> = mutableStateOf(flowOf(PagingData.empty()))
 
     init {
