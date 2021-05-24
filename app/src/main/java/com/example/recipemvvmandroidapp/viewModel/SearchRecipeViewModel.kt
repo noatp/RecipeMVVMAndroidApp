@@ -4,11 +4,13 @@ import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
+import androidx.paging.PagingData
+import com.example.recipemvvmandroidapp.domain.model.Recipe
 import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeListUseCase
 import com.example.recipemvvmandroidapp.domain.useCase.UseCaseResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,9 +28,7 @@ class SearchRecipeViewModel @Inject constructor(
     val searchBarText: LiveData<String> = _searchBarText
 
     //data for lazy list
-    var recipeListForCardView: MutableState<List<RecipeForCardView>> = mutableStateOf(listOf())
-
-    private var pageIndex: Int = 1
+    var pagingFlow: MutableState<Flow<PagingData<Recipe>>> = mutableStateOf(flowOf(PagingData.empty()))
 
     //event for search bar
     val onSearchTextChanged: (String) -> Unit = {
@@ -36,27 +36,11 @@ class SearchRecipeViewModel @Inject constructor(
     }
 
     val onSearch: () -> Unit = {
-        viewModelScope.launch(Dispatchers.IO) {
-            val searchResult = getRecipeListUseCase
-                .execute(
-                    page = pageIndex,
-                    query = searchBarText.value ?: ""
-                )
-            when(searchResult)
-            {
-                is UseCaseResult.Success -> {
-                    recipeListForCardView.value = searchResult.resultValue.map{
-                        RecipeForCardView(
-                            id = it.id,
-                            title = it.title,
-                            featuredImage = it.featuredImage
-                        )
-                    }
-                }
-                is UseCaseResult.Error -> Log.d("Debug: SearchRecipeViewModel",
-                    searchResult.exception.toString()
-                )
-            }
+        when(val useCaseResult = getRecipeListUseCase.execute(searchBarText.value ?: "")){
+            is UseCaseResult.Success -> pagingFlow.value = useCaseResult.resultValue
+            is UseCaseResult.Error -> Log.d("Debug: SearchRecipeViewModel",
+                useCaseResult.exception.toString()
+            )
         }
     }
 }

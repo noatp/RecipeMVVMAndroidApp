@@ -1,6 +1,6 @@
 package com.example.recipemvvmandroidapp.dependency
 
-import com.example.recipemvvmandroidapp.data.repositoryImplementation.RecipeRepository
+import com.example.recipemvvmandroidapp.data.repositoryImplementation.recipeRepository.RecipeRepository
 import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeDetailUseCase
 import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeListUseCase
 import dagger.Module

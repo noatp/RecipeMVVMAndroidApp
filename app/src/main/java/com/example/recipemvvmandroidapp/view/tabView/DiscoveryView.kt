@@ -10,22 +10,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
+import com.example.recipemvvmandroidapp.domain.model.Recipe
 import com.example.recipemvvmandroidapp.router.RouterController
 import com.example.recipemvvmandroidapp.view.viewComponent.RecipeCard
 import com.example.recipemvvmandroidapp.viewModel.DiscoveryViewModel
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun CreateDiscoveryView(
-    recipeList: List<DiscoveryViewModel.RecipeForCardView>,
+    recipeList: LazyPagingItems<Recipe>,
     onClickRecipeCard: (Int) -> Unit
 )
 {
     LazyColumn(
         modifier = Modifier.padding(12.dp)
     ) {
-        itemsIndexed(items = recipeList){ index, recipe ->
+        items(lazyPagingItems = recipeList){recipe ->
             RecipeCard(
-                recipeName = recipe.title,
+                recipeName = recipe!!.title,
                 recipeImageUrl = recipe.featuredImage,
                 onClick = {
                     onClickRecipeCard(recipe.id)
@@ -42,9 +48,7 @@ fun DiscoveryView(
     discoveryViewModel: DiscoveryViewModel
 )
 {
-//    val discoveryViewModel: DiscoveryViewModel = viewModel()
-    val recipeList = discoveryViewModel.recipeListForCardView.value
-    discoveryViewModel.onLaunch()
+    val recipeList = discoveryViewModel.pagingFlow.value.collectAsLazyPagingItems()
     CreateDiscoveryView(
         recipeList = recipeList,
         onClickRecipeCard = {recipeId: Int ->
@@ -58,12 +62,7 @@ fun DiscoveryView(
 fun PreviewDiscoveryView()
 {
     CreateDiscoveryView(
-        recipeList = listOf(
-            DiscoveryViewModel.RecipeForCardView(
-            id = 123,
-            title = "New recipe",
-            featuredImage = "url"
-        )),
+        recipeList = flowOf(PagingData.empty<Recipe>()).collectAsLazyPagingItems(),
         onClickRecipeCard = {}
     )
 }

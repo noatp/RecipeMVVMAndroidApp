@@ -5,23 +5,28 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
+import com.example.recipemvvmandroidapp.domain.model.Recipe
 import com.example.recipemvvmandroidapp.router.RouterController
 import com.example.recipemvvmandroidapp.view.viewComponent.RecipeCard
 import com.example.recipemvvmandroidapp.view.viewComponent.SearchBar
 import com.example.recipemvvmandroidapp.viewModel.SearchRecipeViewModel
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun CreateSearchRecipeView(
     searchBarText: String,
     onSearchTextChanged: (String) -> Unit,
-    recipeList: List<SearchRecipeViewModel.RecipeForCardView>,
+    recipeList: LazyPagingItems<Recipe>,
     onSearch: () -> Unit,
     onClickRecipeCard: (Int) -> Unit
 ){
@@ -37,9 +42,9 @@ fun CreateSearchRecipeView(
         )
         Spacer(modifier = Modifier.height(12.dp))
         LazyColumn {
-            itemsIndexed(items = recipeList){ index, recipe ->
+            items(lazyPagingItems = recipeList){ recipe ->
                 RecipeCard(
-                    recipeName = recipe.title,
+                    recipeName = recipe!!.title,
                     recipeImageUrl = recipe.featuredImage,
                     onClick = {
                         onClickRecipeCard(recipe.id)
@@ -58,7 +63,7 @@ fun SearchRecipeView(
 )
 {
     val searchBarText: String by searchRecipeViewModel.searchBarText.observeAsState(initial = "")
-    val recipeList = searchRecipeViewModel.recipeListForCardView.value
+    val recipeList = searchRecipeViewModel.pagingFlow.value.collectAsLazyPagingItems()
     CreateSearchRecipeView(
         searchBarText = searchBarText,
         onSearchTextChanged = searchRecipeViewModel.onSearchTextChanged,
@@ -77,11 +82,7 @@ fun PreviewSearchRecipeView()
     CreateSearchRecipeView(
         searchBarText = "chicken",
         onSearchTextChanged = { /*TODO*/ },
-        recipeList = listOf(SearchRecipeViewModel.RecipeForCardView(
-            id = 123,
-            title = "New recipe",
-            featuredImage = "url"
-        )),
+        recipeList = flowOf(PagingData.empty<Recipe>()).collectAsLazyPagingItems(),
         onSearch = { /*TODO*/ },
         onClickRecipeCard = {}
     )
