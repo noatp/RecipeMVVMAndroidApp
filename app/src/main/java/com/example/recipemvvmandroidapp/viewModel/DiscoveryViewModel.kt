@@ -17,14 +17,17 @@ import javax.inject.Inject
 class DiscoveryViewModel @Inject constructor(
     private val getRecipeListUseCase: GetRecipeListUseCase
 ): ViewModel(){
-    var pagingFlow: MutableState<Flow<PagingData<Recipe>>> = mutableStateOf(flowOf(PagingData.empty()))
+    var pagingFlow: MutableState<Flow<PagingData<Recipe>>> = mutableStateOf(getRecipeListOnLaunch())
 
-    init {
-        when(val useCaseResult = getRecipeListUseCase.execute("c")){
-            is UseCaseResult.Success -> pagingFlow.value = useCaseResult.resultValue
-            is UseCaseResult.Error -> Log.d("Debug: DiscoveryViewModel",
-                useCaseResult.exception.toString()
-            )
+    private fun getRecipeListOnLaunch(): Flow<PagingData<Recipe>> {
+        return when(val useCaseResult = getRecipeListUseCase.execute("")){
+            is UseCaseResult.Success -> {
+                useCaseResult.resultValue
+            }
+            is UseCaseResult.Error -> {
+                Log.d("Debug: DiscoveryViewModel", useCaseResult.exception.toString())
+                flowOf(PagingData.empty())
+            }
         }
     }
 }
