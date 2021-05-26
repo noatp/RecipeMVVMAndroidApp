@@ -1,18 +1,18 @@
 package com.example.recipemvvmandroidapp.ui.view.tabView
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.flowOf
 fun CreateSearchRecipeView(
     searchBarText: String,
     onSearchTextChanged: (String) -> Unit,
-    recipeList: LazyPagingItems<Recipe>,
+    lazyPagingItems: LazyPagingItems<Recipe>,
     onSearch: () -> Unit,
     onClickRecipeCard: (Int) -> Unit
 ){
@@ -43,8 +43,22 @@ fun CreateSearchRecipeView(
             onSearch = onSearch
         )
         Spacer(modifier = Modifier.height(12.dp))
-        LazyColumn {
-            items(lazyPagingItems = recipeList){ recipe ->
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            //show a loading indicator while waiting for the list to load
+            if(lazyPagingItems.loadState.refresh == LoadState.Loading){
+                item{
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ){
+                        CircularProgressIndicator()
+                    }
+                }
+            }
+
+            items(lazyPagingItems = lazyPagingItems){ recipe ->
                 RecipeCard(
                     recipeName = recipe!!.title,
                     recipeImageUrl = recipe.featuredImage,
@@ -52,7 +66,18 @@ fun CreateSearchRecipeView(
                         onClickRecipeCard(recipe.id)
                     }
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+            }
+
+            //show a loading indicator at the bottom of the list while appending new items to the list
+            if(lazyPagingItems.loadState.append == LoadState.Loading){
+                item {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ){
+                        CircularProgressIndicator()
+                    }
+                }
             }
         }
     }
@@ -66,11 +91,11 @@ fun SearchRecipeView(
 {
     val searchRecipeViewModel: SearchRecipeViewModel = hiltViewModel()
     val searchBarText: String by searchRecipeViewModel.searchBarText.observeAsState(initial = "")
-    val recipeList = searchRecipeViewModel.pagingFlow.value.collectAsLazyPagingItems()
+    val lazyPagingItems = searchRecipeViewModel.pagingFlow.value.collectAsLazyPagingItems()
     CreateSearchRecipeView(
         searchBarText = searchBarText,
         onSearchTextChanged = searchRecipeViewModel.onSearchTextChanged,
-        recipeList = recipeList,
+        lazyPagingItems = lazyPagingItems,
         onSearch = searchRecipeViewModel.onSearch,
         onClickRecipeCard = {recipeId: Int ->
             router.navigateToRecipeDetailView(recipeId)
@@ -85,7 +110,7 @@ fun PreviewSearchRecipeView()
     CreateSearchRecipeView(
         searchBarText = "chicken",
         onSearchTextChanged = { /*TODO*/ },
-        recipeList = flowOf(PagingData.empty<Recipe>()).collectAsLazyPagingItems(),
+        lazyPagingItems = flowOf(PagingData.empty<Recipe>()).collectAsLazyPagingItems(),
         onSearch = { },
         onClickRecipeCard = {}
     )
