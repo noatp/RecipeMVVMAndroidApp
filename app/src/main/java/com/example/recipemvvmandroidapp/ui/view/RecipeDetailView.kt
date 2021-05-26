@@ -1,4 +1,4 @@
-package com.example.recipemvvmandroidapp.view
+package com.example.recipemvvmandroidapp.ui.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.example.recipemvvmandroidapp.R
 import com.example.recipemvvmandroidapp.ui.theme.LightBackground
 import com.example.recipemvvmandroidapp.ui.theme.Shapes
-import com.example.recipemvvmandroidapp.viewModel.RecipeDetailViewModel
+import com.example.recipemvvmandroidapp.ui.viewModel.RecipeDetailViewModel
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
 import com.google.accompanist.imageloading.LoadPainter

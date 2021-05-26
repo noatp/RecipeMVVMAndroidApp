@@ -1,4 +1,4 @@
-package com.example.recipemvvmandroidapp.viewModel
+package com.example.recipemvvmandroidapp.ui.viewModel
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
@@ -38,13 +38,3 @@ class SearchRecipeViewModel @Inject constructor(
         }
     }
 }
-
-//class SearchRecipeViewModelFactory(
-//    private val getRecipeListUseCase: GetRecipeListUseCase
-//): ViewModelProvider.Factory{
-//    override fun <T : ViewModel?> create(
-//        modelClass: Class<T>
-//    ): T {
-//        return SearchRecipeViewModel(getRecipeListUseCase) as T
-//    }
-//}

@@ -1,4 +1,4 @@
-package com.example.recipemvvmandroidapp.router
+package com.example.recipemvvmandroidapp.ui.router
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -7,12 +7,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
-import com.example.recipemvvmandroidapp.view.RecipeDetailView
-import com.example.recipemvvmandroidapp.view.tabView.DiscoveryView
-import com.example.recipemvvmandroidapp.view.tabView.SearchRecipeView
-import com.example.recipemvvmandroidapp.viewModel.DiscoveryViewModel
-import com.example.recipemvvmandroidapp.viewModel.RecipeDetailViewModel
-import com.example.recipemvvmandroidapp.viewModel.SearchRecipeViewModel
+import com.example.recipemvvmandroidapp.ui.view.RecipeDetailView
+import com.example.recipemvvmandroidapp.ui.view.tabView.DiscoveryView
+import com.example.recipemvvmandroidapp.ui.view.tabView.SearchRecipeView
+import com.example.recipemvvmandroidapp.ui.viewModel.DiscoveryViewModel
+import com.example.recipemvvmandroidapp.ui.viewModel.RecipeDetailViewModel
+import com.example.recipemvvmandroidapp.ui.viewModel.SearchRecipeViewModel
 
 class RouterController(
     val tabController: NavHostController,
@@ -58,17 +58,7 @@ class RouterController(
         {
             TabViewDestination.values().map { tabViewDestination: TabViewDestination ->
                 composable(tabViewDestination.route) {
-                    when(tabViewDestination)
-                    {
-                        TabViewDestination.Search -> {
-                            val viewModel = hiltViewModel<SearchRecipeViewModel>(backStackEntry = it)
-                            SearchRecipeView(this@RouterController, viewModel)
-                        }
-                        TabViewDestination.Discovery -> {
-                            val viewModel = hiltViewModel<DiscoveryViewModel>(backStackEntry = it)
-                            DiscoveryView(this@RouterController, viewModel)
-                        }
-                    }
+                    MapTabViewDestinationToComposable(tabViewDestination = tabViewDestination)
                 }
             }
         }
@@ -99,6 +89,17 @@ class RouterController(
                     }
                 }
             }
+        }
+    }
+
+    @Composable
+    fun MapTabViewDestinationToComposable(
+        tabViewDestination: TabViewDestination,
+    ){
+        val router: RouterController = this
+        when(tabViewDestination){
+            TabViewDestination.Search -> SearchRecipeView(router = router)
+            TabViewDestination.Discovery -> DiscoveryView(router = router)
         }
     }
 }

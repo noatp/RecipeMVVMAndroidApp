@@ -1,4 +1,4 @@
-package com.example.recipemvvmandroidapp.view.tabView
+package com.example.recipemvvmandroidapp.ui.view.tabView
 
 
 import androidx.compose.foundation.layout.Spacer
@@ -10,14 +10,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.example.recipemvvmandroidapp.domain.model.Recipe
-import com.example.recipemvvmandroidapp.router.RouterController
-import com.example.recipemvvmandroidapp.view.viewComponent.RecipeCard
-import com.example.recipemvvmandroidapp.viewModel.DiscoveryViewModel
+import com.example.recipemvvmandroidapp.ui.router.RouterController
+import com.example.recipemvvmandroidapp.ui.view.viewComponent.RecipeCard
+import com.example.recipemvvmandroidapp.ui.viewModel.DiscoveryViewModel
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
@@ -45,9 +47,10 @@ fun CreateDiscoveryView(
 @Composable
 fun DiscoveryView(
     router: RouterController,
-    discoveryViewModel: DiscoveryViewModel
+//    discoveryViewModel: DiscoveryViewModel
 )
 {
+    val discoveryViewModel: DiscoveryViewModel = hiltViewModel()
     val recipeList = discoveryViewModel.pagingFlow.value.collectAsLazyPagingItems()
     CreateDiscoveryView(
         recipeList = recipeList,

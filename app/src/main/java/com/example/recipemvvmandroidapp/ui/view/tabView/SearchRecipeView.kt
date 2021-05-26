@@ -1,4 +1,4 @@
-package com.example.recipemvvmandroidapp.view.tabView
+package com.example.recipemvvmandroidapp.ui.view.tabView
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,15 +11,17 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.example.recipemvvmandroidapp.domain.model.Recipe
-import com.example.recipemvvmandroidapp.router.RouterController
-import com.example.recipemvvmandroidapp.view.viewComponent.RecipeCard
-import com.example.recipemvvmandroidapp.view.viewComponent.SearchBar
-import com.example.recipemvvmandroidapp.viewModel.SearchRecipeViewModel
+import com.example.recipemvvmandroidapp.ui.router.RouterController
+import com.example.recipemvvmandroidapp.ui.view.viewComponent.RecipeCard
+import com.example.recipemvvmandroidapp.ui.view.viewComponent.SearchBar
+import com.example.recipemvvmandroidapp.ui.viewModel.SearchRecipeViewModel
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
@@ -59,9 +61,10 @@ fun CreateSearchRecipeView(
 @Composable
 fun SearchRecipeView(
     router: RouterController,
-    searchRecipeViewModel: SearchRecipeViewModel
+//    searchRecipeViewModel: SearchRecipeViewModel
 )
 {
+    val searchRecipeViewModel: SearchRecipeViewModel = hiltViewModel()
     val searchBarText: String by searchRecipeViewModel.searchBarText.observeAsState(initial = "")
     val recipeList = searchRecipeViewModel.pagingFlow.value.collectAsLazyPagingItems()
     CreateSearchRecipeView(
@@ -83,7 +86,7 @@ fun PreviewSearchRecipeView()
         searchBarText = "chicken",
         onSearchTextChanged = { /*TODO*/ },
         recipeList = flowOf(PagingData.empty<Recipe>()).collectAsLazyPagingItems(),
-        onSearch = { /*TODO*/ },
+        onSearch = { },
         onClickRecipeCard = {}
     )
 }

@@ -1,4 +1,4 @@
-package com.example.recipemvvmandroidapp.view.viewComponent
+package com.example.recipemvvmandroidapp.ui.view.viewComponent
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
