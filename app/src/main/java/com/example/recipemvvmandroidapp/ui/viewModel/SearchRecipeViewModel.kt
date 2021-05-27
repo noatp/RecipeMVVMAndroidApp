@@ -5,6 +5,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.recipemvvmandroidapp.domain.model.Recipe
 import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeListUseCase
 import com.example.recipemvvmandroidapp.domain.useCase.UseCaseResult
@@ -31,7 +32,7 @@ class SearchRecipeViewModel @Inject constructor(
 
     val onSearch: () -> Unit = {
         when(val useCaseResult = getRecipeListUseCase.execute(searchBarText.value ?: "")){
-            is UseCaseResult.Success -> pagingFlow.value = useCaseResult.resultValue
+            is UseCaseResult.Success -> pagingFlow.value = useCaseResult.resultValue.cachedIn(viewModelScope)
             is UseCaseResult.Error -> Log.d("Debug: SearchRecipeViewModel",
                 useCaseResult.exception.toString()
             )

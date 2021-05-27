@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.recipemvvmandroidapp.domain.model.Recipe
 import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeListUseCase
 import com.example.recipemvvmandroidapp.domain.useCase.UseCaseResult
@@ -22,7 +24,7 @@ class DiscoveryViewModel @Inject constructor(
     private fun getRecipeListOnLaunch(): Flow<PagingData<Recipe>> {
         return when(val useCaseResult = getRecipeListUseCase.execute("")){
             is UseCaseResult.Success -> {
-                useCaseResult.resultValue
+                useCaseResult.resultValue.cachedIn(viewModelScope)
             }
             is UseCaseResult.Error -> {
                 Log.d("Debug: DiscoveryViewModel", useCaseResult.exception.toString())
