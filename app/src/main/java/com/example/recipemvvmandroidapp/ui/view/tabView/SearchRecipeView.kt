@@ -2,11 +2,9 @@ package com.example.recipemvvmandroidapp.ui.view.tabView
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,6 +28,7 @@ fun CreateSearchRecipeView(
     onSearchTextChanged: (String) -> Unit,
     lazyPagingItems: LazyPagingItems<Recipe>,
     onSearch: () -> Unit,
+    lazyListState: LazyListState,
     onClickRecipeCard: (Int) -> Unit
 ){
     Column(
@@ -44,7 +43,8 @@ fun CreateSearchRecipeView(
         )
         Spacer(modifier = Modifier.height(12.dp))
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            state = lazyListState
         ) {
             //show a loading indicator while waiting for the list to load
             if(lazyPagingItems.loadState.refresh == LoadState.Loading){
@@ -90,13 +90,17 @@ fun SearchRecipeView(
 )
 {
     val searchRecipeViewModel: SearchRecipeViewModel = hiltViewModel()
-    val searchBarText: String by searchRecipeViewModel.searchBarText.observeAsState(initial = "")
+    val searchBarText = searchRecipeViewModel.searchBarText.value
+    val onSearchTextChanged = searchRecipeViewModel.onSearchTextChanged
     val lazyPagingItems = searchRecipeViewModel.pagingFlow.value.collectAsLazyPagingItems()
+    val onSearch = searchRecipeViewModel.onSearch
+    val lazyListState = searchRecipeViewModel.lazyListState.value
     CreateSearchRecipeView(
         searchBarText = searchBarText,
-        onSearchTextChanged = searchRecipeViewModel.onSearchTextChanged,
+        onSearchTextChanged = onSearchTextChanged,
         lazyPagingItems = lazyPagingItems,
-        onSearch = searchRecipeViewModel.onSearch,
+        onSearch = onSearch,
+        lazyListState = lazyListState,
         onClickRecipeCard = {recipeId: Int ->
             router.navigateToRecipeDetailView(recipeId)
         }
@@ -112,6 +116,7 @@ fun PreviewSearchRecipeView()
         onSearchTextChanged = { /*TODO*/ },
         lazyPagingItems = flowOf(PagingData.empty<Recipe>()).collectAsLazyPagingItems(),
         onSearch = { },
+        lazyListState = LazyListState(),
         onClickRecipeCard = {}
     )
 }

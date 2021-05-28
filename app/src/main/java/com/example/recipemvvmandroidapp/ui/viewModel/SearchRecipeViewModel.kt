@@ -1,6 +1,7 @@
 package com.example.recipemvvmandroidapp.ui.viewModel
 
 import android.util.Log
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
@@ -19,19 +20,20 @@ class SearchRecipeViewModel @Inject constructor(
     private val getRecipeListUseCase: GetRecipeListUseCase
 ): ViewModel() {
     //data for search bar
-    private val _searchBarText = MutableLiveData("")
-    val searchBarText: LiveData<String> = _searchBarText
-
-    //data for lazy list
-    var pagingFlow: MutableState<Flow<PagingData<Recipe>>> = mutableStateOf(flowOf(PagingData.empty()))
-
+    val searchBarText: MutableState<String> = mutableStateOf("")
     //event for search bar
     val onSearchTextChanged: (String) -> Unit = {
-        _searchBarText.value = it
+        searchBarText.value = it
     }
 
+    //data for lazy list
+    val pagingFlow: MutableState<Flow<PagingData<Recipe>>> = mutableStateOf(flowOf(PagingData.empty()))
+
+    //scroll state for lazy list
+    val lazyListState: MutableState<LazyListState> = mutableStateOf(LazyListState())
+
     val onSearch: () -> Unit = {
-        when(val useCaseResult = getRecipeListUseCase.execute(searchBarText.value ?: "")){
+        when(val useCaseResult = getRecipeListUseCase.execute(searchBarText.value)){
             is UseCaseResult.Success -> pagingFlow.value = useCaseResult.resultValue.cachedIn(viewModelScope)
             is UseCaseResult.Error -> Log.d("Debug: SearchRecipeViewModel",
                 useCaseResult.exception.toString()
