@@ -80,9 +80,8 @@ class RouterController(
                     when(viewDestination)
                     {
                         ViewDestination.RecipeDetailView -> {
-                            val viewModel = hiltViewModel<RecipeDetailViewModel>(backStackEntry = it)
+                            val viewModel: RecipeDetailViewModel = hiltViewModel()
                             RecipeDetailView(
-                                recipeId = it.arguments?.getInt(viewDestination.arguments.first)!!,
                                 recipeDetailViewModel = viewModel
                             )
                         }

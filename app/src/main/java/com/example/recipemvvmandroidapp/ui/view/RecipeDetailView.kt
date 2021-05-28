@@ -92,11 +92,9 @@ fun CreateRecipeDetailView(
 
 @Composable
 fun RecipeDetailView(
-    recipeId: Int,
     recipeDetailViewModel: RecipeDetailViewModel
 )
 {
-//    val recipeDetailViewModel: RecipeDetailViewModel = viewModel()
     val recipe = recipeDetailViewModel.recipeForDetailView.value
     val painter = rememberCoilPainter(
         request = recipe.featuredImage,
@@ -105,8 +103,6 @@ fun RecipeDetailView(
         },
         fadeIn = true
     )
-
-    recipeDetailViewModel.onLaunch(recipeId)
 
     CreateRecipeDetailView(
         painter = painter,
