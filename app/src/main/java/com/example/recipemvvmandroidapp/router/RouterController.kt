@@ -1,7 +1,6 @@
 package com.example.recipemvvmandroidapp.router
 
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.navigate
 
 class RouterController(
     val tabController: NavHostController,
@@ -11,7 +10,6 @@ class RouterController(
         tabController.navigate(
             route = tabViewDestination.route,
             builder = {
-                popUpTo = tabController.graph.startDestination
                 launchSingleTop = true
             }
         )
