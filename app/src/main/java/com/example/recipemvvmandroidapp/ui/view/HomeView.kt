@@ -1,4 +1,4 @@
-package com.example.recipemvvmandroidapp.view
+package com.example.recipemvvmandroidapp.ui.view
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.BottomAppBar
@@ -14,13 +14,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.example.recipemvvmandroidapp.dependency.Dependency
-import com.example.recipemvvmandroidapp.router.RouterController
-import com.example.recipemvvmandroidapp.router.TabViewDestination
-import com.example.recipemvvmandroidapp.router.ViewDestination
-import com.example.recipemvvmandroidapp.view.tabView.DiscoveryView
-import com.example.recipemvvmandroidapp.view.tabView.SearchRecipeView
-import com.example.recipemvvmandroidapp.view.viewComponent.BottomNavBar
-import com.example.recipemvvmandroidapp.viewModel.homeViewModel
+import com.example.recipemvvmandroidapp.ui.router.RouterController
+import com.example.recipemvvmandroidapp.ui.router.TabViewDestination
+import com.example.recipemvvmandroidapp.ui.router.ViewDestination
+import com.example.recipemvvmandroidapp.ui.view.tabView.DiscoveryView
+import com.example.recipemvvmandroidapp.ui.view.tabView.SearchRecipeView
+import com.example.recipemvvmandroidapp.ui.view.viewComponent.BottomNavBar
+import com.example.recipemvvmandroidapp.ui.viewModel.homeViewModel
 
 @Composable
 fun HomeView(

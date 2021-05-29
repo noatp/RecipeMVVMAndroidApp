@@ -1,52 +1,57 @@
-package com.example.recipemvvmandroidapp.view
+package com.example.recipemvvmandroidapp.ui.view.viewComponent
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.recipemvvmandroidapp.R
-import com.example.recipemvvmandroidapp.dependency.Dependency
-import com.example.recipemvvmandroidapp.ui.theme.LightBackground
-import com.example.recipemvvmandroidapp.ui.theme.Shapes
-import com.example.recipemvvmandroidapp.viewModel.RecipeDetailViewModel
-import com.example.recipemvvmandroidapp.viewModel.recipeDetailViewModel
+import com.example.recipemvvmandroidapp.ui.theme.*
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
-import com.google.accompanist.imageloading.LoadPainter
 import kotlinx.coroutines.Dispatchers
+import com.example.recipemvvmandroidapp.R
+import com.google.accompanist.imageloading.LoadPainter
 
 @Composable
-fun RecipeDetailView(
-    painter: LoadPainter<Any>,
-    recipe:  RecipeDetailViewModel.RecipeForDetailView
+fun CreateRecipeCard(
+    recipeName: String,
+    onClick: () -> Unit,
+    painter: LoadPainter<Any>
 ){
-    Surface() {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            //Image
-            item{
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clickable(onClick = onClick),
+        backgroundColor = LightBackground,
+        shape = Shapes.small,
+        border = BorderStroke(1.dp, DarkBackgroundVariant),
+        content = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
                 when (painter.loadState) {
                     is ImageLoadState.Success -> {
                         Image(
                             painter = painter,
-                            contentDescription = "${recipe.title}",
+                            contentDescription = "random image",
                             modifier = Modifier
+                                .padding(8.dp)
                                 .fillMaxWidth()
-                                .height(250.dp)
+                                .height(200.dp)
                                 .clip(Shapes.medium),
                             contentScale = ContentScale.FillWidth
                         )
@@ -57,8 +62,9 @@ fun RecipeDetailView(
                             painter = painterResource(id = R.drawable.blank),
                             contentDescription = "loadplaceholder",
                             modifier = Modifier
+                                .padding(8.dp)
                                 .fillMaxWidth()
-                                .height(250.dp)
+                                .height(200.dp)
                                 .clip(Shapes.medium)
                         )
                     }
@@ -66,7 +72,7 @@ fun RecipeDetailView(
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
-                                .height(250.dp)
+                                .height(200.dp)
                                 .fillMaxWidth(),
                         ){
                             CircularProgressIndicator(
@@ -75,61 +81,53 @@ fun RecipeDetailView(
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                //Title
                 Text(
-                    text = recipe.title,
-                    style = MaterialTheme.typography.h4
+                    text = recipeName,
+                    modifier = Modifier
+                        .padding(8.dp),
+                    color = DarkBackground,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.body1
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                //Ingredients
-                recipe.ingredients.map {
-                    Text(
-                        text = "- $it",
-                        style = MaterialTheme.typography.body1
-                    )
-                }
             }
         }
-    }
+    )
 }
 
 @Composable
-fun Dependency.View.RecipeDetailView(recipeId: Int)
+fun RecipeCard(
+    recipeName: String,
+    recipeImageUrl: String,
+    onClick: () -> Unit,
+)
 {
-    val recipeDetailViewModel = viewModel.recipeDetailViewModel()
-    val recipe = recipeDetailViewModel.recipeForDetailView.value
     val painter = rememberCoilPainter(
-        request = recipe.featuredImage,
+        request = recipeImageUrl,
         requestBuilder = {
             dispatcher(Dispatchers.IO)
         },
         fadeIn = true
     )
-
-    recipeDetailViewModel.onLaunch(recipeId)
-
-    RecipeDetailView(
-        painter = painter,
-        recipe = recipe
+    CreateRecipeCard(
+        recipeName = recipeName,
+        onClick = onClick,
+        painter = painter
     )
 }
 
 @Preview
 @Composable
-fun PreviewRecipeDetailView()
+fun PreviewCreateRecipeCard()
 {
     val painter = rememberCoilPainter(
         request = "url",
+        fadeIn = true,
         previewPlaceholder = R.drawable.load_placeholder
     )
-
-    RecipeDetailView(
-        painter = painter,
-        recipe = RecipeDetailViewModel.RecipeForDetailView(
-            title = "This is a title",
-            featuredImage = "url",
-            ingredients = listOf("ingredient1", "ingredient2", "ingredient3")
-        )
+    CreateRecipeCard(
+        recipeName = "Test a long long long long name",
+        onClick = {},
+        painter = painter
     )
 }

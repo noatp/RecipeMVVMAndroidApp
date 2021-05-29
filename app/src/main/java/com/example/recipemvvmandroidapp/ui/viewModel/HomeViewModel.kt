@@ -1,10 +1,10 @@
-package com.example.recipemvvmandroidapp.viewModel
+package com.example.recipemvvmandroidapp.ui.viewModel
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.recipemvvmandroidapp.dependency.Dependency
-import com.example.recipemvvmandroidapp.router.TabViewDestination
+import com.example.recipemvvmandroidapp.ui.router.TabViewDestination
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -24,7 +24,7 @@ class HomeViewModelFactory(): ViewModelProvider.Factory{
 }
 
 @Composable
-fun Dependency.ViewModel.homeViewModel(): HomeViewModel{
+fun Dependency.ViewModel.homeViewModel(): HomeViewModel {
     return viewModel(
         key = "HomeViewModel",
         factory = HomeViewModelFactory()

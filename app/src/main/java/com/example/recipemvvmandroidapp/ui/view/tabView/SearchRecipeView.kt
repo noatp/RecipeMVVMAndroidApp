@@ -1,4 +1,4 @@
-package com.example.recipemvvmandroidapp.view.tabView
+package com.example.recipemvvmandroidapp.ui.view.tabView
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,11 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.recipemvvmandroidapp.dependency.Dependency
-import com.example.recipemvvmandroidapp.router.RouterController
-import com.example.recipemvvmandroidapp.view.viewComponent.RecipeCard
-import com.example.recipemvvmandroidapp.viewModel.searchRecipeViewModel
-import com.example.recipemvvmandroidapp.view.viewComponent.SearchBar
-import com.example.recipemvvmandroidapp.viewModel.SearchRecipeViewModel
+import com.example.recipemvvmandroidapp.ui.router.RouterController
+import com.example.recipemvvmandroidapp.ui.view.viewComponent.RecipeCard
+import com.example.recipemvvmandroidapp.ui.viewModel.searchRecipeViewModel
+import com.example.recipemvvmandroidapp.ui.view.viewComponent.SearchBar
+import com.example.recipemvvmandroidapp.ui.viewModel.SearchRecipeViewModel
 
 @Composable
 fun SearchRecipeView(
@@ -78,7 +78,8 @@ fun PreviewSearchRecipeView()
     SearchRecipeView(
         searchBarText = "chicken",
         onSearchTextChanged = { /*TODO*/ },
-        recipeList = listOf(SearchRecipeViewModel.RecipeForCardView(
+        recipeList = listOf(
+            SearchRecipeViewModel.RecipeForCardView(
             id = 123,
             title = "New recipe",
             featuredImage = "url"

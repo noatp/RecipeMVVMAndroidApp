@@ -1,10 +1,12 @@
-package com.example.recipemvvmandroidapp.viewModel
+package com.example.recipemvvmandroidapp.ui.viewModel
 
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recipemvvmandroidapp.dependency.Dependency
 import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeListUseCase
@@ -13,40 +15,28 @@ import com.example.recipemvvmandroidapp.domain.useCase.getRecipeListUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class SearchRecipeViewModel(
+class DiscoveryViewModel(
     private val getRecipeListUseCase: GetRecipeListUseCase
-): ViewModel() {
+): ViewModel(){
     data class RecipeForCardView(
         val id: Int,
         val title: String,
         val featuredImage: String
     )
 
-    //data for search bar
-    private val _searchBarText = MutableLiveData("")
-    val searchBarText: LiveData<String> = _searchBarText
-
-    //data for lazy list
     var recipeListForCardView: MutableState<List<RecipeForCardView>> = mutableStateOf(listOf())
 
-    private var pageIndex: Int = 1
-
-    //event for search bar
-    val onSearchTextChanged: (String) -> Unit = {
-        _searchBarText.value = it
-    }
-
-    val onSearch: () -> Unit = {
-        viewModelScope.launch(Dispatchers.IO) {
-            val searchResult = getRecipeListUseCase
+    fun onLaunch(){
+        viewModelScope.launch (Dispatchers.IO){
+            when(val result = getRecipeListUseCase
                 .execute(
-                    page = pageIndex,
-                    query = searchBarText.value ?: ""
+                    page = 1,
+                    query = "a"
                 )
-            when(searchResult)
+            )
             {
                 is UseCaseResult.Success -> {
-                    recipeListForCardView.value = searchResult.resultValue.map{
+                    recipeListForCardView.value = result.resultValue.map{
                         RecipeForCardView(
                             id = it.id,
                             title = it.title,
@@ -54,29 +44,29 @@ class SearchRecipeViewModel(
                         )
                     }
                 }
-                is UseCaseResult.Error -> Log.d("Debug: SearchRecipeViewModel",
-                    searchResult.exception.toString()
+                is UseCaseResult.Error -> Log.d("Debug: DiscoveryViewModel",
+                    result.exception.toString()
                 )
             }
         }
     }
 }
 
-class SearchRecipeViewModelFactory(
+class DiscoveryViewModelFactory(
     private val getRecipeListUseCase: GetRecipeListUseCase
 ): ViewModelProvider.Factory{
     override fun <T : ViewModel?> create(
         modelClass: Class<T>
     ): T {
-        return SearchRecipeViewModel(getRecipeListUseCase) as T
+        return DiscoveryViewModel(getRecipeListUseCase) as T
     }
 }
 
 @Composable
-fun Dependency.ViewModel.searchRecipeViewModel(): SearchRecipeViewModel{
+fun Dependency.ViewModel.discoveryViewModel(): DiscoveryViewModel {
     return viewModel(
-        key = "SearchRecipeViewModel",
-        factory = SearchRecipeViewModelFactory(
+        key = "DiscoveryViewModel",
+        factory = DiscoveryViewModelFactory(
             useCase.getRecipeListUseCase()
         )
     )

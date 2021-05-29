@@ -1,4 +1,4 @@
-package com.example.recipemvvmandroidapp.viewModel
+package com.example.recipemvvmandroidapp.ui.viewModel
 
 import android.util.Log
 import androidx.compose.runtime.Composable
