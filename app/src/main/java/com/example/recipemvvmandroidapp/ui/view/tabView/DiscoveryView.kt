@@ -1,10 +1,14 @@
 package com.example.recipemvvmandroidapp.ui.view.tabView
 
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.recipemvvmandroidapp.dependency.Dependency
 import com.example.recipemvvmandroidapp.ui.router.RouterController
 import com.example.recipemvvmandroidapp.ui.view.viewComponent.RecipeCard
@@ -17,7 +21,10 @@ fun DiscoveryView(
     onClickRecipeCard: (Int) -> Unit
 )
 {
-    LazyColumn() {
+    LazyColumn(
+        modifier = Modifier.padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
         items(items = recipeList){ recipe ->
             RecipeCard(
                 recipeName = recipe.title,

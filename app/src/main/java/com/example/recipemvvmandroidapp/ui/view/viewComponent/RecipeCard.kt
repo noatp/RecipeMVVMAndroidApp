@@ -1,6 +1,5 @@
 package com.example.recipemvvmandroidapp.ui.view.viewComponent
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,9 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.recipemvvmandroidapp.ui.theme.*
@@ -32,67 +29,44 @@ fun CreateRecipeCard(
 ){
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .clickable(onClick = onClick),
-        backgroundColor = LightBackground,
-        shape = Shapes.small,
-        border = BorderStroke(1.dp, DarkBackgroundVariant),
-        content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                when (painter.loadState) {
-                    is ImageLoadState.Success -> {
-                        Image(
-                            painter = painter,
-                            contentDescription = "random image",
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxWidth()
-                                .height(200.dp)
-                                .clip(Shapes.medium),
-                            contentScale = ContentScale.FillWidth
-                        )
-                    }
-                    // for preview
-                    ImageLoadState.Empty -> {
-                        Image(
-                            painter = painterResource(id = R.drawable.blank),
-                            contentDescription = "loadplaceholder",
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxWidth()
-                                .height(200.dp)
-                                .clip(Shapes.medium)
-                        )
-                    }
-                    else -> {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier
-                                .height(200.dp)
-                                .fillMaxWidth(),
-                        ){
-                            CircularProgressIndicator(
-                                color = LightBackground
-                            )
-                        }
+            .clickable(onClick = onClick)
+    ){
+        Column(
+            modifier = Modifier
+                .padding(12.dp)
+                .fillMaxWidth()
+        ) {
+            when (painter.loadState) {
+                is ImageLoadState.Success -> {
+                    Image(
+                        painter = painter,
+                        contentDescription = "random image",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .clip(Shapes.medium),
+                        contentScale = ContentScale.FillWidth
+                    )
+                }
+                else -> {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .height(200.dp)
+                            .fillMaxWidth(),
+                    ){
+                        CircularProgressIndicator()
                     }
                 }
-                Text(
-                    text = recipeName,
-                    modifier = Modifier
-                        .padding(8.dp),
-                    color = DarkBackground,
-                    maxLines = 1,
-                    style = MaterialTheme.typography.body1
-                )
-                Spacer(modifier = Modifier.height(8.dp))
             }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = recipeName,
+                maxLines = 1,
+                style = MaterialTheme.typography.subtitle2
+            )
         }
-    )
+    }
 }
 
 @Composable

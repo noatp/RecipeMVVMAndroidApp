@@ -17,7 +17,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.recipemvvmandroidapp.R
 import com.example.recipemvvmandroidapp.dependency.Dependency
-import com.example.recipemvvmandroidapp.ui.theme.LightBackground
 import com.example.recipemvvmandroidapp.ui.theme.Shapes
 import com.example.recipemvvmandroidapp.ui.viewModel.RecipeDetailViewModel
 import com.example.recipemvvmandroidapp.ui.viewModel.recipeDetailViewModel
@@ -35,7 +34,7 @@ fun RecipeDetailView(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(12.dp)
         ) {
             //Image
             item{
@@ -69,9 +68,7 @@ fun RecipeDetailView(
                                 .height(250.dp)
                                 .fillMaxWidth(),
                         ){
-                            CircularProgressIndicator(
-                                color = LightBackground
-                            )
+                            CircularProgressIndicator()
                         }
                     }
                 }

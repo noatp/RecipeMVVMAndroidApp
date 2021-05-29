@@ -1,5 +1,6 @@
 package com.example.recipemvvmandroidapp.ui.view
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import com.example.recipemvvmandroidapp.dependency.Dependency
 import com.example.recipemvvmandroidapp.ui.router.RouterController
 import com.example.recipemvvmandroidapp.ui.router.TabViewDestination
 import com.example.recipemvvmandroidapp.ui.router.ViewDestination
+import com.example.recipemvvmandroidapp.ui.theme.RecipeMVVMTheme
 import com.example.recipemvvmandroidapp.ui.view.tabView.DiscoveryView
 import com.example.recipemvvmandroidapp.ui.view.tabView.SearchRecipeView
 import com.example.recipemvvmandroidapp.ui.view.viewComponent.NavTabRow
@@ -24,46 +26,52 @@ fun HomeView(
     view: Dependency.View
 )
 {
-    Scaffold (
-        modifier = Modifier,
-        bottomBar = { BottomAppBar {
-            NavTabRow(
-                tabs = tabs,
-                currentTab = currentTab,
-                onTabSelected = {router.navigateBetweenTabs(it)}
-            )
-        } },
-        content = {
-            NavHost(navController = router.tabController, startDestination = TabViewDestination.Search.route)
-            {
-                TabViewDestination.values().map { tabViewDestination: TabViewDestination ->
-                    composable(tabViewDestination.route) {
-                        when(tabViewDestination)
-                        {
-                            TabViewDestination.Search -> view.SearchRecipeView(router)
-                            TabViewDestination.Discovery -> view.DiscoveryView(router)
+    RecipeMVVMTheme {
+        Scaffold (
+            modifier = Modifier,
+            bottomBar = { BottomAppBar {
+                NavTabRow(
+                    tabs = tabs,
+                    currentTab = currentTab,
+                    onTabSelected = {router.navigateBetweenTabs(it)}
+                )
+            } },
+            content = {
+                NavHost(
+                    navController = router.tabController,
+                    startDestination = TabViewDestination.Search.route,
+                    modifier = Modifier.padding(it)
+                )
+                {
+                    TabViewDestination.values().map { tabViewDestination: TabViewDestination ->
+                        composable(tabViewDestination.route) {
+                            when(tabViewDestination)
+                            {
+                                TabViewDestination.Search -> view.SearchRecipeView(router)
+                                TabViewDestination.Discovery -> view.DiscoveryView(router)
+                            }
                         }
                     }
                 }
             }
-        }
-    )
+        )
 
-    NavHost(navController = router.modalController, startDestination = "blank")
-    {
-        composable(route = "blank") {}
-        ViewDestination.values().map{ viewDestination: ViewDestination ->
-            composable(
-                route = viewDestination.route + "/{${viewDestination.arguments.first}}",
-                arguments = listOf(
-                    navArgument(viewDestination.arguments.first){
-                        type = viewDestination.arguments.second}
-                )
-            ) {
-                when(viewDestination)
-                {
-                    ViewDestination.RecipeDetailView
-                    -> view.RecipeDetailView(it.arguments?.getInt(viewDestination.arguments.first)!!)
+        NavHost(navController = router.modalController, startDestination = "blank")
+        {
+            composable(route = "blank") {}
+            ViewDestination.values().map{ viewDestination: ViewDestination ->
+                composable(
+                    route = viewDestination.route + "/{${viewDestination.arguments.first}}",
+                    arguments = listOf(
+                        navArgument(viewDestination.arguments.first){
+                            type = viewDestination.arguments.second}
+                    )
+                ) {
+                    when(viewDestination)
+                    {
+                        ViewDestination.RecipeDetailView
+                        -> view.RecipeDetailView(it.arguments?.getInt(viewDestination.arguments.first)!!)
+                    }
                 }
             }
         }
