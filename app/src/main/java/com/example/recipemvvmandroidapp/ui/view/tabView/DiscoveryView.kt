@@ -2,14 +2,13 @@ package com.example.recipemvvmandroidapp.ui.view.tabView
 
 
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.recipemvvmandroidapp.dependency.Dependency
 import com.example.recipemvvmandroidapp.ui.router.RouterController
 import com.example.recipemvvmandroidapp.ui.view.viewComponent.RecipeCard
 import com.example.recipemvvmandroidapp.ui.viewModel.DiscoveryViewModel
-import com.example.recipemvvmandroidapp.ui.viewModel.SearchRecipeViewModel
 import com.example.recipemvvmandroidapp.ui.viewModel.discoveryViewModel
 
 @Composable
@@ -19,7 +18,7 @@ fun DiscoveryView(
 )
 {
     LazyColumn() {
-        itemsIndexed(items = recipeList){ index, recipe ->
+        items(items = recipeList){ recipe ->
             RecipeCard(
                 recipeName = recipe.title,
                 recipeImageUrl = recipe.featuredImage,
