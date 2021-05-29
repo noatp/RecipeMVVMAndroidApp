@@ -4,8 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Scaffold
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -39,7 +38,7 @@ fun SearchRecipeView(
         )
         Spacer(modifier = Modifier.height(8.dp))
         LazyColumn() {
-            itemsIndexed(items = recipeList){ index, recipe ->
+            items(items = recipeList){ recipe ->
                 RecipeCard(
                     recipeName = recipe.title,
                     recipeImageUrl = recipe.featuredImage,
@@ -58,13 +57,15 @@ fun Dependency.View.SearchRecipeView(
 )
 {
     val searchRecipeViewModel = viewModel.searchRecipeViewModel()
-    val searchBarText: String by searchRecipeViewModel.searchBarText.observeAsState(initial = "")
+    val onSearchTextChanged = searchRecipeViewModel.onSearchTextChanged
+    val searchBarText = searchRecipeViewModel.searchBarText.value
     val recipeList = searchRecipeViewModel.recipeListForCardView.value
+    val onSearch = searchRecipeViewModel.onSearch
     SearchRecipeView(
         searchBarText = searchBarText,
-        onSearchTextChanged = searchRecipeViewModel.onSearchTextChanged,
+        onSearchTextChanged = onSearchTextChanged,
         recipeList = recipeList,
-        onSearch = searchRecipeViewModel.onSearch,
+        onSearch = onSearch,
         onClickRecipeCard = {recipeId: Int ->
             router.navigateToRecipeDetailView(recipeId)
         }

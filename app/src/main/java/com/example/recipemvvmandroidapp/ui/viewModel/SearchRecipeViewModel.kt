@@ -23,18 +23,16 @@ class SearchRecipeViewModel(
     )
 
     //data for search bar
-    private val _searchBarText = MutableLiveData("")
-    val searchBarText: LiveData<String> = _searchBarText
+    val searchBarText: MutableState<String> = mutableStateOf("")
+    //event for search bar
+    val onSearchTextChanged: (String) -> Unit = {
+        searchBarText.value = it
+    }
 
     //data for lazy list
     var recipeListForCardView: MutableState<List<RecipeForCardView>> = mutableStateOf(listOf())
 
     private var pageIndex: Int = 1
-
-    //event for search bar
-    val onSearchTextChanged: (String) -> Unit = {
-        _searchBarText.value = it
-    }
 
     val onSearch: () -> Unit = {
         viewModelScope.launch(Dispatchers.IO) {
@@ -65,6 +63,7 @@ class SearchRecipeViewModel(
 class SearchRecipeViewModelFactory(
     private val getRecipeListUseCase: GetRecipeListUseCase
 ): ViewModelProvider.Factory{
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(
         modelClass: Class<T>
     ): T {
