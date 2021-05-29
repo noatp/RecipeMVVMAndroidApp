@@ -2,7 +2,7 @@ package com.example.recipemvvmandroidapp.dependency
 
 import com.example.recipemvvmandroidapp.data.remote.RecipeNetworkService
 import com.example.recipemvvmandroidapp.data.remote.util.RecipeDTOMapper
-import com.example.recipemvvmandroidapp.data.repositoryImplementation.RecipeRepository
+import com.example.recipemvvmandroidapp.data.repositoryImplementation.recipeRepository.RecipeRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,7 +18,7 @@ object RepositoryModule {
     fun provideRecipeRepository(
         recipeService: RecipeNetworkService,
         recipeDTOMapper: RecipeDTOMapper
-    ): RecipeRepository{
+    ): RecipeRepository {
         return RecipeRepository(
             recipeService = recipeService,
             recipeDTOMapper = recipeDTOMapper

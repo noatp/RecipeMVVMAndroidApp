@@ -1,4 +1,4 @@
-package com.example.recipemvvmandroidapp.router
+package com.example.recipemvvmandroidapp.ui.router
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Lightbulb
@@ -13,7 +13,7 @@ enum class TabViewDestination(
     Discovery(route = "discovery", icon = Icons.Outlined.Lightbulb);
 
     companion object{
-        fun getTabFromRoute(route: String?): TabViewDestination{
+        fun getTabFromRoute(route: String?): TabViewDestination {
             return when (route?.substringBefore(delimiter = "/")){
                 Search.route -> Search
                 Discovery.route -> Discovery

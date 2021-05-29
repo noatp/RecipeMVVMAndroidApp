@@ -1,4 +1,4 @@
-package com.example.recipemvvmandroidapp.view
+package com.example.recipemvvmandroidapp.ui.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.example.recipemvvmandroidapp.R
 import com.example.recipemvvmandroidapp.ui.theme.LightBackground
 import com.example.recipemvvmandroidapp.ui.theme.Shapes
-import com.example.recipemvvmandroidapp.viewModel.RecipeDetailViewModel
+import com.example.recipemvvmandroidapp.ui.viewModel.RecipeDetailViewModel
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
 import com.google.accompanist.imageloading.LoadPainter
@@ -92,11 +92,9 @@ fun CreateRecipeDetailView(
 
 @Composable
 fun RecipeDetailView(
-    recipeId: Int,
     recipeDetailViewModel: RecipeDetailViewModel
 )
 {
-//    val recipeDetailViewModel: RecipeDetailViewModel = viewModel()
     val recipe = recipeDetailViewModel.recipeForDetailView.value
     val painter = rememberCoilPainter(
         request = recipe.featuredImage,
@@ -105,8 +103,6 @@ fun RecipeDetailView(
         },
         fadeIn = true
     )
-
-    recipeDetailViewModel.onLaunch(recipeId)
 
     CreateRecipeDetailView(
         painter = painter,

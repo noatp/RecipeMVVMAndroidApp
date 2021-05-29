@@ -1,4 +1,4 @@
-package com.example.recipemvvmandroidapp.view
+package com.example.recipemvvmandroidapp.ui.view
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomAppBar
@@ -6,10 +6,10 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.recipemvvmandroidapp.router.RouterController
-import com.example.recipemvvmandroidapp.router.TabViewDestination
+import com.example.recipemvvmandroidapp.ui.router.RouterController
+import com.example.recipemvvmandroidapp.ui.router.TabViewDestination
 import com.example.recipemvvmandroidapp.ui.theme.RecipeMVVMTheme
-import com.example.recipemvvmandroidapp.view.viewComponent.NavTabRow
+import com.example.recipemvvmandroidapp.ui.view.viewComponent.NavTabRow
 
 @Composable
 fun CreateHomeView(

@@ -1,6 +1,6 @@
 package com.example.recipemvvmandroidapp.domain.useCase
 
-import com.example.recipemvvmandroidapp.data.repositoryImplementation.RecipeRepository
+import com.example.recipemvvmandroidapp.data.repositoryImplementation.recipeRepository.RecipeRepository
 import com.example.recipemvvmandroidapp.domain.model.Recipe
 
 class GetRecipeDetailUseCase(

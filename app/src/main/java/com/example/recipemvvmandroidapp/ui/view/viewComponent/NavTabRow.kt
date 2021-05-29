@@ -1,4 +1,4 @@
-package com.example.recipemvvmandroidapp.view.viewComponent
+package com.example.recipemvvmandroidapp.ui.view.viewComponent
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
@@ -26,7 +26,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.recipemvvmandroidapp.router.TabViewDestination
+import com.example.recipemvvmandroidapp.ui.router.TabViewDestination
 import com.example.recipemvvmandroidapp.ui.theme.*
 
 private val TabHeight = 60.dp

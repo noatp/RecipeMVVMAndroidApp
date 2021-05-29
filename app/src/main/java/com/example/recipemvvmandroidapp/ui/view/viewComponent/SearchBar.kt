@@ -1,4 +1,4 @@
-package com.example.recipemvvmandroidapp.view.viewComponent
+package com.example.recipemvvmandroidapp.ui.view.viewComponent
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions

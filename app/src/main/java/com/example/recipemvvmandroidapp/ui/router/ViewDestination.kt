@@ -1,4 +1,4 @@
-package com.example.recipemvvmandroidapp.router
+package com.example.recipemvvmandroidapp.ui.router
 
 import androidx.navigation.NavType
 
