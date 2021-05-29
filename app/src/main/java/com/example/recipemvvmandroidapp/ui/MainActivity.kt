@@ -31,4 +31,11 @@ class MainActivity : ComponentActivity() {
             dependency.view().HomeView(router = router)
         }
     }
+    override fun onBackPressed() {
+        if(router.popOffModal())
+        {
+            return
+        }
+        super.onBackPressed()
+    }
 }
