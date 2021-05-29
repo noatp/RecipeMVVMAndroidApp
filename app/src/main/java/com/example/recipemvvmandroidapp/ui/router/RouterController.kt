@@ -97,8 +97,20 @@ class RouterController(
     ){
         val router: RouterController = this
         when(tabViewDestination){
-            TabViewDestination.Search -> SearchRecipeView(router = router)
-            TabViewDestination.Discovery -> DiscoveryView(router = router)
+            TabViewDestination.Search -> {
+                val searchRecipeViewModel: SearchRecipeViewModel = hiltViewModel()
+                SearchRecipeView(
+                    router = router,
+                    searchRecipeViewModel = searchRecipeViewModel
+                )
+            }
+            TabViewDestination.Discovery -> {
+                val discoveryViewModel: DiscoveryViewModel = hiltViewModel()
+                DiscoveryView(
+                    router = router,
+                    discoveryViewModel = discoveryViewModel
+                )
+            }
         }
     }
 }

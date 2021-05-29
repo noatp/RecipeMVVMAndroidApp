@@ -71,10 +71,9 @@ fun CreateDiscoveryView(
 @Composable
 fun DiscoveryView(
     router: RouterController,
-//    discoveryViewModel: DiscoveryViewModel
+    discoveryViewModel: DiscoveryViewModel
 )
 {
-    val discoveryViewModel: DiscoveryViewModel = hiltViewModel()
     val lazyPagingItems = discoveryViewModel.pagingFlow.value.collectAsLazyPagingItems()
     CreateDiscoveryView(
         lazyPagingItems = lazyPagingItems,

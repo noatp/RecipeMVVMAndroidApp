@@ -86,10 +86,9 @@ fun CreateSearchRecipeView(
 @Composable
 fun SearchRecipeView(
     router: RouterController,
-//    searchRecipeViewModel: SearchRecipeViewModel
+    searchRecipeViewModel: SearchRecipeViewModel
 )
 {
-    val searchRecipeViewModel: SearchRecipeViewModel = hiltViewModel()
     val searchBarText = searchRecipeViewModel.searchBarText.value
     val onSearchTextChanged = searchRecipeViewModel.onSearchTextChanged
     val lazyPagingItems = searchRecipeViewModel.pagingFlow.value.collectAsLazyPagingItems()
