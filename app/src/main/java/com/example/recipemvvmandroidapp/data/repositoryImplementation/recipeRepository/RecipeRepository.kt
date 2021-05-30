@@ -4,11 +4,11 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.recipemvvmandroidapp.data.remote.RecipeNetworkService
-import com.example.recipemvvmandroidapp.data.remote.util.RecipeDTOMapper
-import com.example.recipemvvmandroidapp.data.remote.util.recipeDTOMapper
+import com.example.recipemvvmandroidapp.domain.model.RecipeDTO
+import com.example.recipemvvmandroidapp.domain.util.RecipeDTOMapper
+import com.example.recipemvvmandroidapp.domain.util.recipeDTOMapper
 import com.example.recipemvvmandroidapp.dependency.Dependency
 import com.example.recipemvvmandroidapp.dependency.recipeService
-import com.example.recipemvvmandroidapp.domain.model.Recipe
 import com.example.recipemvvmandroidapp.domain.repositoryInterface.RecipeRepositoryInterface
 import kotlinx.coroutines.flow.Flow
 
@@ -16,14 +16,14 @@ class RecipeRepository(
     private val recipeService: RecipeNetworkService,
     private val recipeDTOMapper: RecipeDTOMapper
 ): RecipeRepositoryInterface {
-    override suspend fun getRecipeById(id: Int): Recipe {
+    override suspend fun getRecipeById(id: Int): RecipeDTO {
         return recipeDTOMapper
-            .mapToDomainModel(recipeService
+            .mapDomainModelToDTO(recipeService
                 .getRecipeById(id)
             )
     }
 
-    override fun searchForRecipes(query: String): Flow<PagingData<Recipe>> {
+    override fun searchForRecipes(query: String): Flow<PagingData<RecipeDTO>> {
         return Pager(
             config = PagingConfig(
                 pageSize = API_PAGE_SIZE,

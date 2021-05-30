@@ -13,8 +13,8 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.example.recipemvvmandroidapp.domain.model.RecipeDTO
 import com.example.recipemvvmandroidapp.dependency.Dependency
-import com.example.recipemvvmandroidapp.domain.model.Recipe
 import com.example.recipemvvmandroidapp.ui.router.RouterController
 import com.example.recipemvvmandroidapp.ui.view.viewComponent.RecipeCard
 import com.example.recipemvvmandroidapp.ui.viewModel.searchRecipeViewModel
@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.flowOf
 fun SearchRecipeView(
     searchBarText: String,
     onSearchTextChanged: (String) -> Unit,
-    lazyPagingItems: LazyPagingItems<Recipe>,
+    lazyPagingItems: LazyPagingItems<RecipeDTO>,
     onSearch: () -> Unit,
     onClickRecipeCard: (Int) -> Unit
 ){
@@ -107,9 +107,9 @@ fun PreviewSearchRecipeView()
 {
     SearchRecipeView(
         searchBarText = "chicken",
-        onSearchTextChanged = { /*TODO*/ },
-        lazyPagingItems = flowOf(PagingData.empty<Recipe>()).collectAsLazyPagingItems(),
+        onSearchTextChanged = { },
+        lazyPagingItems = flowOf(PagingData.empty<RecipeDTO>()).collectAsLazyPagingItems(),
         onSearch = { },
-        onClickRecipeCard = {}
+        onClickRecipeCard = { }
     )
 }

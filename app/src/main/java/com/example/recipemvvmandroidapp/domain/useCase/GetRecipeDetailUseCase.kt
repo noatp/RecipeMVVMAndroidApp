@@ -1,16 +1,16 @@
 package com.example.recipemvvmandroidapp.domain.useCase
 
+import com.example.recipemvvmandroidapp.domain.model.RecipeDTO
 import com.example.recipemvvmandroidapp.data.repositoryImplementation.recipeRepository.RecipeRepository
 import com.example.recipemvvmandroidapp.data.repositoryImplementation.recipeRepository.recipeRepository
 import com.example.recipemvvmandroidapp.dependency.Dependency
-import com.example.recipemvvmandroidapp.domain.model.Recipe
 
 class GetRecipeDetailUseCase(
     private val recipeRepository: RecipeRepository
 ) {
     suspend fun execute(
         id: Int
-    ): UseCaseResult<Recipe>
+    ): UseCaseResult<RecipeDTO>
     {
         return try{
             UseCaseResult.Success(recipeRepository

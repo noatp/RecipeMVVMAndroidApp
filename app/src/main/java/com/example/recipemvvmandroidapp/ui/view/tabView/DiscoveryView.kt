@@ -17,8 +17,8 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.example.recipemvvmandroidapp.domain.model.RecipeDTO
 import com.example.recipemvvmandroidapp.dependency.Dependency
-import com.example.recipemvvmandroidapp.domain.model.Recipe
 import com.example.recipemvvmandroidapp.ui.router.RouterController
 import com.example.recipemvvmandroidapp.ui.view.viewComponent.RecipeCard
 import com.example.recipemvvmandroidapp.ui.viewModel.DiscoveryViewModel
@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun DiscoveryView(
-    lazyPagingItems: LazyPagingItems<Recipe>,
+    lazyPagingItems: LazyPagingItems<RecipeDTO>,
     onClickRecipeCard: (Int) -> Unit
 )
 {
@@ -91,7 +91,7 @@ fun Dependency.View.DiscoveryView(
 fun PreviewDiscoveryView()
 {
     DiscoveryView(
-        lazyPagingItems = flowOf(PagingData.empty<Recipe>()).collectAsLazyPagingItems(),
+        lazyPagingItems = flowOf(PagingData.empty<RecipeDTO>()).collectAsLazyPagingItems(),
         onClickRecipeCard = {}
     )
 }
