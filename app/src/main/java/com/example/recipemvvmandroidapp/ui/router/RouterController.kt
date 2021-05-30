@@ -21,6 +21,7 @@ class RouterController(
         tabController.navigate(
             route = tabViewDestination.route,
             builder = {
+                popUpTo(tabController.graph.startDestinationId)
                 launchSingleTop = true
             }
         )
