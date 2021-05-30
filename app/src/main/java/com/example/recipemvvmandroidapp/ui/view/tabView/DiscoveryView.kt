@@ -9,13 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.example.recipemvvmandroidapp.domain.model.Recipe
+import com.example.recipemvvmandroidapp.domain.model.RecipeDTO
 import com.example.recipemvvmandroidapp.ui.router.RouterController
 import com.example.recipemvvmandroidapp.ui.view.viewComponent.RecipeCard
 import com.example.recipemvvmandroidapp.ui.viewModel.DiscoveryViewModel
@@ -23,7 +22,7 @@ import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun CreateDiscoveryView(
-    lazyPagingItems: LazyPagingItems<Recipe>,
+    lazyPagingItems: LazyPagingItems<RecipeDTO>,
     onClickRecipeCard: (Int) -> Unit
 )
 {
@@ -88,7 +87,7 @@ fun DiscoveryView(
 fun PreviewDiscoveryView()
 {
     CreateDiscoveryView(
-        lazyPagingItems = flowOf(PagingData.empty<Recipe>()).collectAsLazyPagingItems(),
+        lazyPagingItems = flowOf(PagingData.empty<RecipeDTO>()).collectAsLazyPagingItems(),
         onClickRecipeCard = {}
     )
 }

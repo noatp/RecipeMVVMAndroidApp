@@ -1,7 +1,7 @@
 package com.example.recipemvvmandroidapp.dependency
 
 import com.example.recipemvvmandroidapp.data.remote.RecipeNetworkService
-import com.example.recipemvvmandroidapp.data.remote.util.RecipeDTOMapper
+import com.example.recipemvvmandroidapp.domain.util.RecipeDTOMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,7 +14,7 @@ object ServiceModule {
 
     @Singleton
     @Provides
-    fun provideRecipeDTOMapper(): RecipeDTOMapper{
+    fun provideRecipeDTOMapper(): RecipeDTOMapper {
         return RecipeDTOMapper()
     }
 

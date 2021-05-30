@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.recipemvvmandroidapp.domain.model.Recipe
+import com.example.recipemvvmandroidapp.domain.model.RecipeDTO
 import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeListUseCase
 import com.example.recipemvvmandroidapp.domain.useCase.UseCaseResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,9 +20,9 @@ import javax.inject.Inject
 class DiscoveryViewModel @Inject constructor(
     private val getRecipeListUseCase: GetRecipeListUseCase
 ): ViewModel(){
-    var pagingFlow: MutableState<Flow<PagingData<Recipe>>> = mutableStateOf(getRecipeListOnLaunch())
+    var pagingFlow: MutableState<Flow<PagingData<RecipeDTO>>> = mutableStateOf(getRecipeListOnLaunch())
 
-    private fun getRecipeListOnLaunch(): Flow<PagingData<Recipe>> {
+    private fun getRecipeListOnLaunch(): Flow<PagingData<RecipeDTO>> {
         return when(val useCaseResult = getRecipeListUseCase.execute("")){
             is UseCaseResult.Success -> {
                 useCaseResult.resultValue.cachedIn(viewModelScope)

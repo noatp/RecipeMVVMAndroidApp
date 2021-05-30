@@ -3,10 +3,8 @@ package com.example.recipemvvmandroidapp.data.repositoryImplementation.recipeRep
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.recipemvvmandroidapp.data.remote.RecipeNetworkService
-import com.example.recipemvvmandroidapp.data.remote.util.RecipeDTOMapper
-import com.example.recipemvvmandroidapp.data.repositoryImplementation.recipeRepository.RecipeRepository.Companion.API_PAGE_SIZE
-import com.example.recipemvvmandroidapp.domain.model.Recipe
-import java.lang.Exception
+import com.example.recipemvvmandroidapp.domain.util.RecipeDTOMapper
+import com.example.recipemvvmandroidapp.domain.model.RecipeDTO
 
 private const val INITIAL_PAGE_INDEX = 1
 
@@ -20,12 +18,12 @@ class RecipePagingSource(
     private val recipeService: RecipeNetworkService,
     private val recipeDTOMapper: RecipeDTOMapper,
     private val query: String
-): PagingSource<Int, Recipe>(){
+): PagingSource<Int, RecipeDTO>(){
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Recipe> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RecipeDTO> {
         val currentPage = params.key ?: INITIAL_PAGE_INDEX
         val response = recipeDTOMapper
-            .mapToListDomainModel(
+            .mapListDomainModelToListDTO(
                 recipeService.searchForRecipes(currentPage, query)
             )
 
@@ -39,7 +37,7 @@ class RecipePagingSource(
         )
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Recipe>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, RecipeDTO>): Int? {
         // Try to find the page key of the closest page to anchorPosition, from
         // either the prevKey or the nextKey, but need to handle nullability
         // here:

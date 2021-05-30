@@ -1,7 +1,7 @@
 package com.example.recipemvvmandroidapp.data.remote
 
-import com.example.recipemvvmandroidapp.data.remote.model.RecipeDTO
 import com.example.recipemvvmandroidapp.data.remote.model.Response
+import com.example.recipemvvmandroidapp.domain.model.Recipe
 import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
@@ -19,14 +19,14 @@ class RecipeNetworkService(): RecipeNetworkServiceInterface {
         }
     }
 
-    override suspend fun getRecipeById(id: Int): RecipeDTO {
+    override suspend fun getRecipeById(id: Int): Recipe {
         return client.get(urlString = "$apiUrl/get/?id=$id")
         {
             headers{ append("Authorization", authToken) }
         }
     }
 
-    override suspend fun searchForRecipes(page: Int, query: String): List<RecipeDTO>{
+    override suspend fun searchForRecipes(page: Int, query: String): List<Recipe>{
         return client.get<Response>(urlString = "$apiUrl/search/?page=$page&query=$query")
         {
             headers{
