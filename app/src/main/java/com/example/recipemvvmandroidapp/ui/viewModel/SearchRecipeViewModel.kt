@@ -21,12 +21,6 @@ import kotlinx.coroutines.launch
 class SearchRecipeViewModel(
     private val getRecipeListUseCase: GetRecipeListUseCase
 ): ViewModel() {
-    data class RecipeForCardView(
-        val id: Int,
-        val title: String,
-        val featuredImage: String
-    )
-
     //data for search bar
     val searchBarText: MutableState<String> = mutableStateOf("")
     //event for search bar
