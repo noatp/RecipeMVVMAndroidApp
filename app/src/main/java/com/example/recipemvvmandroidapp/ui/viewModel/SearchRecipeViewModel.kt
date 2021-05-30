@@ -6,11 +6,16 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.recipemvvmandroidapp.dependency.Dependency
+import com.example.recipemvvmandroidapp.domain.model.Recipe
 import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeListUseCase
 import com.example.recipemvvmandroidapp.domain.useCase.UseCaseResult
 import com.example.recipemvvmandroidapp.domain.useCase.getRecipeListUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 class SearchRecipeViewModel(
@@ -30,30 +35,15 @@ class SearchRecipeViewModel(
     }
 
     //data for lazy list
-    var recipeListForCardView: MutableState<List<RecipeForCardView>> = mutableStateOf(listOf())
-
-    private var pageIndex: Int = 1
+    var pagingFlow: MutableState<Flow<PagingData<Recipe>>> = mutableStateOf(flowOf(PagingData.empty()))
 
     val onSearch: () -> Unit = {
         viewModelScope.launch(Dispatchers.IO) {
-            val searchResult = getRecipeListUseCase
-                .execute(
-                    page = pageIndex,
-                    query = searchBarText.value ?: ""
-                )
-            when(searchResult)
+            when(val useCaseResult = getRecipeListUseCase.execute(query = searchBarText.value))
             {
-                is UseCaseResult.Success -> {
-                    recipeListForCardView.value = searchResult.resultValue.map{
-                        RecipeForCardView(
-                            id = it.id,
-                            title = it.title,
-                            featuredImage = it.featuredImage
-                        )
-                    }
-                }
+                is UseCaseResult.Success -> pagingFlow.value = useCaseResult.resultValue.cachedIn(viewModelScope)
                 is UseCaseResult.Error -> Log.d("Debug: SearchRecipeViewModel",
-                    searchResult.exception.toString()
+                    useCaseResult.exception.toString()
                 )
             }
         }

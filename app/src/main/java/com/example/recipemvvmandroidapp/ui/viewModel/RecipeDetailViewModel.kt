@@ -54,6 +54,7 @@ class RecipeDetailViewModel(
 class RecipeDetailViewModelFactory(
     private val getRecipeDetailUseCase: GetRecipeDetailUseCase
 ): ViewModelProvider.Factory{
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(
         modelClass: Class<T>
     ): T {

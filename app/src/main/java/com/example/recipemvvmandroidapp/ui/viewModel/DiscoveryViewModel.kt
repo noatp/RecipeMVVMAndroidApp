@@ -8,46 +8,31 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.recipemvvmandroidapp.dependency.Dependency
+import com.example.recipemvvmandroidapp.domain.model.Recipe
 import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeListUseCase
 import com.example.recipemvvmandroidapp.domain.useCase.UseCaseResult
 import com.example.recipemvvmandroidapp.domain.useCase.getRecipeListUseCase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 class DiscoveryViewModel(
-    private val getRecipeListUseCase: GetRecipeListUseCase
+    getRecipeListUseCase: GetRecipeListUseCase
 ): ViewModel(){
-    data class RecipeForCardView(
-        val id: Int,
-        val title: String,
-        val featuredImage: String
-    )
 
-    var recipeListForCardView: MutableState<List<RecipeForCardView>> = mutableStateOf(listOf())
+    var pagingFlow: MutableState<Flow<PagingData<Recipe>>> = mutableStateOf(flowOf(PagingData.empty()))
 
-    fun onLaunch(){
-        viewModelScope.launch (Dispatchers.IO){
-            when(val result = getRecipeListUseCase
-                .execute(
-                    page = 1,
-                    query = "a"
-                )
-            )
-            {
-                is UseCaseResult.Success -> {
-                    recipeListForCardView.value = result.resultValue.map{
-                        RecipeForCardView(
-                            id = it.id,
-                            title = it.title,
-                            featuredImage = it.featuredImage
-                        )
-                    }
-                }
-                is UseCaseResult.Error -> Log.d("Debug: DiscoveryViewModel",
-                    result.exception.toString()
-                )
+    init{
+        when(val useCaseResult = getRecipeListUseCase.execute(query = "a"))
+        {
+            is UseCaseResult.Success -> {
+                pagingFlow.value = useCaseResult.resultValue.cachedIn(viewModelScope)
             }
+            is UseCaseResult.Error -> Log.d("Debug: DiscoveryViewModel",
+                useCaseResult.exception.toString()
+            )
         }
     }
 }

@@ -1,21 +1,22 @@
 package com.example.recipemvvmandroidapp.domain.useCase
 
-import com.example.recipemvvmandroidapp.data.repositoryImplementation.RecipeRepository
-import com.example.recipemvvmandroidapp.data.repositoryImplementation.recipeRepository
+import androidx.paging.PagingData
+import com.example.recipemvvmandroidapp.data.repositoryImplementation.recipeRepository.RecipeRepository
+import com.example.recipemvvmandroidapp.data.repositoryImplementation.recipeRepository.recipeRepository
 import com.example.recipemvvmandroidapp.dependency.Dependency
 import com.example.recipemvvmandroidapp.domain.model.Recipe
+import kotlinx.coroutines.flow.Flow
 
 class GetRecipeListUseCase(
     private val recipeRepository: RecipeRepository
 ) {
-    suspend fun execute(
-        page: Int,
+    fun execute(
         query: String
-    ): UseCaseResult<List<Recipe>>
+    ): UseCaseResult<Flow<PagingData<Recipe>>>
     {
         return try{
             UseCaseResult.Success(recipeRepository
-                .searchForRecipes(page, query)
+                .searchForRecipes(query)
             )
         } catch(exception: Exception){
             UseCaseResult.Error(exception)
