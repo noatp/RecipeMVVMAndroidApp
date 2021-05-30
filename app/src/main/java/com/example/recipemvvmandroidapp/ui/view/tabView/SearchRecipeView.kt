@@ -2,10 +2,13 @@ package com.example.recipemvvmandroidapp.ui.view.tabView
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -38,17 +41,39 @@ fun SearchRecipeView(
         )
         Spacer(modifier = Modifier.height(12.dp))
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            //show a loading indicator while waiting for the list to load
+            if(lazyPagingItems.loadState.refresh == LoadState.Loading){
+                item{
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ){
+                        CircularProgressIndicator()
+                    }
+                }
+            }
+
             items(lazyPagingItems = lazyPagingItems){ recipe ->
-                recipe?.let{
-                    RecipeCard(
-                        recipeName = recipe.title,
-                        recipeImageUrl = recipe.featuredImage,
-                        onClick = {
-                            onClickRecipeCard(recipe.id)
-                        }
-                    )
+                RecipeCard(
+                    recipeName = recipe!!.title,
+                    recipeImageUrl = recipe.featuredImage,
+                    onClick = {
+                        onClickRecipeCard(recipe.id)
+                    }
+                )
+            }
+
+            //show a loading indicator at the bottom of the list while appending new items to the list
+            if(lazyPagingItems.loadState.append == LoadState.Loading){
+                item {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ){
+                        CircularProgressIndicator()
+                    }
                 }
             }
         }
