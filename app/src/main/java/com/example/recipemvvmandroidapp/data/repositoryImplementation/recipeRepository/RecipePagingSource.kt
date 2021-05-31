@@ -22,18 +22,16 @@ class RecipePagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RecipeDTO> {
         val currentPage = params.key ?: INITIAL_PAGE_INDEX
-        val response = recipeDTOMapper
-            .mapListDomainModelToListDTO(
-                recipeService.searchForRecipes(currentPage, query)
-            )
+        val response = recipeService.searchForRecipes(currentPage, query)
+        val responseResults = recipeDTOMapper.mapListDomainModelToListDTO(response.results)
 
         //Can also return a LoadResult.Error here to catch a network call error etc.
         //However, UseCaseResult.Error is more preferable to catch an error, since the LoadResult.Error
         //will forward the error to UI layer
         return LoadResult.Page(
-            data = response,
-            prevKey = if(currentPage == INITIAL_PAGE_INDEX) null else currentPage - 1,
-            nextKey = if(response.isEmpty()) null else currentPage + 1
+            data = responseResults,
+            prevKey = if(response.previous == null) null else currentPage - 1,
+            nextKey = if(response.next == null) null else currentPage + 1
         )
     }
 

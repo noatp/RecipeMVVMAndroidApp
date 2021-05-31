@@ -26,13 +26,13 @@ class RecipeNetworkService(): RecipeNetworkServiceInterface {
         }
     }
 
-    override suspend fun searchForRecipes(page: Int, query: String): List<Recipe>{
+    override suspend fun searchForRecipes(page: Int, query: String): Response{
         return client.get<Response>(urlString = "$apiUrl/search/?page=$page&query=$query")
         {
             headers{
                 append("Authorization", authToken)
             }
-        }.results
+        }
 
     }
 }
