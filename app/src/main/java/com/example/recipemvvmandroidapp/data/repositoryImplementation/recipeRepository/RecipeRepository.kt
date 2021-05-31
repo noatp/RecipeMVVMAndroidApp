@@ -19,7 +19,7 @@ class RecipeRepository(
     override suspend fun getRecipeById(id: Int): RecipeDTO {
         val recipe = recipeService.getRecipeById(id)
         val recipeDAO = recipeRoomDatabase.recipeDAO()
-        recipeDAO.insertAll(recipe)
+        recipeDAO.insertRecipes(recipe)
         return recipeDTOMapper
             .mapDomainModelToDTO(recipeDAO.findByRecipeId(id))
     }
