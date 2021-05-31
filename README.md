@@ -15,6 +15,7 @@ A functional version of the app using Hilt dependency injection
 # Key Features:
 - Receiving data from REST API
 - Pagination using Pagination 3 for Compose
+- Database using Room
 - Fetch and display image from network using Coil
 - Material Theming
 - Bottom navigation bar using Navigation for Compose
