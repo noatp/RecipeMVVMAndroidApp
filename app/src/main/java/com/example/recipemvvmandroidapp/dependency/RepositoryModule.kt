@@ -1,5 +1,6 @@
 package com.example.recipemvvmandroidapp.dependency
 
+import com.example.recipemvvmandroidapp.data.local.RecipeRoomDatabase
 import com.example.recipemvvmandroidapp.data.remote.RecipeNetworkService
 import com.example.recipemvvmandroidapp.domain.util.RecipeDTOMapper
 import com.example.recipemvvmandroidapp.data.repositoryImplementation.recipeRepository.RecipeRepository
@@ -17,11 +18,13 @@ object RepositoryModule {
     @Provides
     fun provideRecipeRepository(
         recipeService: RecipeNetworkService,
-        recipeDTOMapper: RecipeDTOMapper
+        recipeDTOMapper: RecipeDTOMapper,
+        recipeRoomDatabase: RecipeRoomDatabase
     ): RecipeRepository {
         return RecipeRepository(
             recipeService = recipeService,
-            recipeDTOMapper = recipeDTOMapper
+            recipeDTOMapper = recipeDTOMapper,
+            recipeRoomDatabase = recipeRoomDatabase
         )
     }
 }
