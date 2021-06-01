@@ -23,9 +23,7 @@ class RecipeRepository(
 
     private suspend fun getRecipeFromNetwork(id: Int): Recipe {
         recipeService.getRecipeById(id).let{
-            recipeRoomDatabase.withTransaction {
-                recipeDAO.insertRecipe(it)
-            }
+            recipeDAO.insertRecipe(it)
             return it
         }
     }

@@ -8,6 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,6 +20,8 @@ import com.example.recipemvvmandroidapp.R
 import com.example.recipemvvmandroidapp.ui.theme.LightBackground
 import com.example.recipemvvmandroidapp.ui.theme.Shapes
 import com.example.recipemvvmandroidapp.ui.viewModel.RecipeDetailViewModel
+import com.example.recipemvvmandroidapp.ui.viewModel.RecipeForDetailView
+import com.example.recipemvvmandroidapp.ui.viewModel.UiState
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
 import com.google.accompanist.imageloading.LoadPainter
@@ -27,7 +30,7 @@ import kotlinx.coroutines.Dispatchers
 @Composable
 fun CreateRecipeDetailView(
     painter: LoadPainter<Any>,
-    recipe:  RecipeDetailViewModel.RecipeForDetailView
+    recipe:  RecipeForDetailView
 ){
     Surface() {
         LazyColumn(
@@ -41,7 +44,7 @@ fun CreateRecipeDetailView(
                     is ImageLoadState.Success -> {
                         Image(
                             painter = painter,
-                            contentDescription = "${recipe.title}",
+                            contentDescription = recipe.title,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(250.dp)
@@ -95,31 +98,32 @@ fun RecipeDetailView(
     recipeDetailViewModel: RecipeDetailViewModel
 )
 {
-    val recipe = recipeDetailViewModel.recipeForDetailView.value
-    val loadError = recipeDetailViewModel.loadError.value
-    val painter = rememberCoilPainter(
-        request = recipe.featuredImage,
-        requestBuilder = {
-            dispatcher(Dispatchers.IO)
-        },
-        fadeIn = true
-    )
-    if (loadError){
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxWidth()
-        ){
-            Text(
-                text = "An error occurred",
-                style = MaterialTheme.typography.h5
+    when(val uiState = recipeDetailViewModel.uiState.collectAsState().value){
+        is UiState.Success -> {
+            val recipe = uiState.states
+            val painter = rememberCoilPainter(
+                request = recipe.featuredImage,
+                requestBuilder = {
+                    dispatcher(Dispatchers.IO)
+                },
+                fadeIn = true
+            )
+            CreateRecipeDetailView(
+                painter = painter,
+                recipe = recipe
             )
         }
-    }
-    else {
-        CreateRecipeDetailView(
-            painter = painter,
-            recipe = recipe
-        )
+        is UiState.Error -> {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxWidth()
+            ){
+                Text(
+                    text = "An error occurred: ${uiState.exception}",
+                    style = MaterialTheme.typography.h5
+                )
+            }
+        }
     }
 }
 
@@ -134,7 +138,7 @@ fun PreviewRecipeDetailView()
 
     CreateRecipeDetailView(
         painter = painter,
-        recipe = RecipeDetailViewModel.RecipeForDetailView(
+        recipe = RecipeForDetailView(
             title = "This is a title",
             featuredImage = "url",
             ingredients = listOf("ingredient1", "ingredient2", "ingredient3")
