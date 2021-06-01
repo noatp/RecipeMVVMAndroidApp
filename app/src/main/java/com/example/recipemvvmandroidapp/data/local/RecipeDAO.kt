@@ -6,18 +6,18 @@ import com.example.recipemvvmandroidapp.domain.model.Recipe
 
 @Dao
 interface RecipeDAO{
-    @Query("SELECT * FROM Recipe " +
-            "WHERE id = (:recipeId) ")
-    fun findByRecipeId(recipeId: Int): Recipe
+    @Query("SELECT * FROM Recipe WHERE id = (:recipeId) ")
+    suspend fun findByRecipeId(recipeId: Int): Recipe?
 
-    @Query("SELECT * FROM Recipe " +
-            "WHERE title LIKE ('%' || :query || '%') " +
-            "OR ingredients LIKE ('%' || :query || '%') ")
+    @Query("SELECT * FROM Recipe WHERE title LIKE ('%' || :query || '%') OR ingredients LIKE ('%' || :query || '%') ")
     fun searchForRecipe(query: String): PagingSource<Int, Recipe>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertRecipes(vararg recipes: Recipe)
+    suspend fun insertAllRecipe(recipes: List<Recipe>)
 
-    @Delete
-    fun delete(recipe: Recipe)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRecipe(recipe: Recipe)
+
+    @Query("DELETE FROM Recipe")
+    suspend fun deleteAllRecipe()
 }

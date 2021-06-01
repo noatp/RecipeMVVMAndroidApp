@@ -26,6 +26,8 @@ class RecipeDetailViewModel @Inject constructor(
 
     private val recipeId = savedStateHandle.get<Int>("recipeId")
 
+    var loadError: MutableState<Boolean> = mutableStateOf(false)
+
     var recipeForDetailView: MutableState<RecipeForDetailView> = mutableStateOf(
         RecipeForDetailView(
             title = "",
@@ -39,16 +41,20 @@ class RecipeDetailViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 when(val result = getRecipeDetailUseCase.execute(it))
                 {
-                    is UseCaseResult.Success -> recipeForDetailView.value = result.resultValue.let{
-                        RecipeForDetailView(
-                            title = it.title,
-                            featuredImage = it.featuredImage,
-                            ingredients = it.ingredients
-                        )
+                    is UseCaseResult.Success -> {
+                        recipeForDetailView.value = result.resultValue.let{
+                            RecipeForDetailView(
+                                title = it.title,
+                                featuredImage = it.featuredImage,
+                                ingredients = it.ingredients
+                            )
+                        }
+                        loadError.value = false
                     }
-                    is UseCaseResult.Error -> Log.d("Debug: RecipeDetailViewModel",
-                        result.exception.toString()
-                    )
+                    is UseCaseResult.Error -> {
+                        Log.d("Debug: RecipeDetailViewModel", result.exception.toString())
+                        loadError.value = true
+                    }
                 }
             }
         }

@@ -96,6 +96,7 @@ fun RecipeDetailView(
 )
 {
     val recipe = recipeDetailViewModel.recipeForDetailView.value
+    val loadError = recipeDetailViewModel.loadError.value
     val painter = rememberCoilPainter(
         request = recipe.featuredImage,
         requestBuilder = {
@@ -103,11 +104,23 @@ fun RecipeDetailView(
         },
         fadeIn = true
     )
-
-    CreateRecipeDetailView(
-        painter = painter,
-        recipe = recipe
-    )
+    if (loadError){
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxWidth()
+        ){
+            Text(
+                text = "An error occurred",
+                style = MaterialTheme.typography.h5
+            )
+        }
+    }
+    else {
+        CreateRecipeDetailView(
+            painter = painter,
+            recipe = recipe
+        )
+    }
 }
 
 @Preview
