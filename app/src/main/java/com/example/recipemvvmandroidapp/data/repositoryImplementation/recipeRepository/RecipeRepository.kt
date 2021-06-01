@@ -3,6 +3,7 @@ package com.example.recipemvvmandroidapp.data.repositoryImplementation.recipeRep
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.example.recipemvvmandroidapp.data.local.RecipeRoomDatabase
 import com.example.recipemvvmandroidapp.data.remote.RecipeNetworkService
 import com.example.recipemvvmandroidapp.domain.util.RecipeDTOMapper
 import com.example.recipemvvmandroidapp.domain.model.RecipeDTO
@@ -11,13 +12,16 @@ import kotlinx.coroutines.flow.Flow
 
 class RecipeRepository(
     private val recipeService: RecipeNetworkService,
-    private val recipeDTOMapper: RecipeDTOMapper
+    private val recipeDTOMapper: RecipeDTOMapper,
+    private val recipeRoomDatabase: RecipeRoomDatabase
 ): RecipeRepositoryInterface {
+
     override suspend fun getRecipeById(id: Int): RecipeDTO {
+        val recipe = recipeService.getRecipeById(id)
+        val recipeDAO = recipeRoomDatabase.recipeDAO()
+        recipeDAO.insertRecipes(recipe)
         return recipeDTOMapper
-            .mapDomainModelToDTO(recipeService
-                .getRecipeById(id)
-            )
+            .mapDomainModelToDTO(recipeDAO.findByRecipeId(id))
     }
 
     override fun searchForRecipes(query: String): Flow<PagingData<RecipeDTO>> {
