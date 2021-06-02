@@ -4,7 +4,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,12 +28,12 @@ import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun CreateSearchRecipeView(
+    loadError: Boolean,
     searchBarText: String,
-    onSearchTextChanged: (String) -> Unit,
     lazyPagingItems: LazyPagingItems<RecipeDTO>,
+    onSearchTextChanged: (String) -> Unit,
     onSearch: () -> Unit,
-    lazyListState: LazyListState,
-    onClickRecipeCard: (Int) -> Unit
+    onClickRecipeCard: (Int) -> Unit,
 ){
     Column(
         modifier = Modifier.padding(12.dp)
@@ -43,41 +46,71 @@ fun CreateSearchRecipeView(
             onSearch = onSearch
         )
         Spacer(modifier = Modifier.height(12.dp))
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            state = lazyListState
-        ) {
-            //show a loading indicator while waiting for the list to load
-            if(lazyPagingItems.loadState.refresh == LoadState.Loading){
-                item{
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    ){
-                        CircularProgressIndicator()
-                    }
-                }
-            }
 
-            items(lazyPagingItems = lazyPagingItems){ recipe ->
-                RecipeCard(
-                    recipeName = recipe!!.title,
-                    recipeImageUrl = recipe.featuredImage,
-                    onClick = {
-                        onClickRecipeCard(recipe.id)
-                    }
+        if ((lazyPagingItems.loadState.refresh is LoadState.Error) || loadError ){
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            ){
+                Text(
+                    text = "An error occurred",
+                    style = MaterialTheme.typography.h5
                 )
             }
-
-            //show a loading indicator at the bottom of the list while appending new items to the list
-            if(lazyPagingItems.loadState.append == LoadState.Loading){
-                item {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    ){
-                        CircularProgressIndicator()
+        }
+        else {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                //show a loading indicator while waiting for the list to load
+                if(lazyPagingItems.loadState.refresh == LoadState.Loading){
+                    item{
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ){
+                            CircularProgressIndicator()
+                        }
                     }
+                }
+
+                items(lazyPagingItems = lazyPagingItems){ recipe ->
+                    RecipeCard(
+                        recipeName = recipe!!.title,
+                        recipeImageUrl = recipe.featuredImage,
+                        onClick = {
+                            onClickRecipeCard(recipe.id)
+                        }
+                    )
+                }
+
+                //show a load indicator while loading
+                //or error message
+                when(lazyPagingItems.loadState.append){
+                    is LoadState.Loading -> {
+                        item {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            ){
+                                CircularProgressIndicator()
+                            }
+                        }
+                    }
+                    is LoadState.Error -> {
+                        item {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            ){
+                                Text(
+                                    text = "An error occurred",
+                                    style = MaterialTheme.typography.h5
+                                )
+                            }
+                        }
+                    }
+                    else -> {}
                 }
             }
         }
@@ -90,20 +123,20 @@ fun SearchRecipeView(
     searchRecipeViewModel: SearchRecipeViewModel
 )
 {
-    val searchBarText = searchRecipeViewModel.searchBarText.value
+    val uiState = searchRecipeViewModel.uiState.collectAsState().value
+    val loadError = uiState.loadError
+    val searchBarText = uiState.searchBarText
+    val lazyPagingItems = uiState.pagingFlow.collectAsLazyPagingItems()
     val onSearchTextChanged = searchRecipeViewModel.onSearchTextChanged
-    val lazyPagingItems = searchRecipeViewModel.pagingFlow.value.collectAsLazyPagingItems()
     val onSearch = searchRecipeViewModel.onSearch
-    val lazyListState = searchRecipeViewModel.lazyListState.value
+    val onClickRecipeCard = {recipeId: Int -> router.navigateToRecipeDetailView(recipeId)}
     CreateSearchRecipeView(
+        loadError = loadError,
         searchBarText = searchBarText,
-        onSearchTextChanged = onSearchTextChanged,
         lazyPagingItems = lazyPagingItems,
+        onSearchTextChanged = onSearchTextChanged,
         onSearch = onSearch,
-        lazyListState = lazyListState,
-        onClickRecipeCard = {recipeId: Int ->
-            router.navigateToRecipeDetailView(recipeId)
-        }
+        onClickRecipeCard = onClickRecipeCard,
     )
 }
 
@@ -112,11 +145,11 @@ fun SearchRecipeView(
 fun PreviewSearchRecipeView()
 {
     CreateSearchRecipeView(
+        loadError = false,
         searchBarText = "chicken",
-        onSearchTextChanged = { /*TODO*/ },
         lazyPagingItems = flowOf(PagingData.empty<RecipeDTO>()).collectAsLazyPagingItems(),
+        onSearchTextChanged = { },
         onSearch = { },
-        lazyListState = LazyListState(),
-        onClickRecipeCard = {}
+        onClickRecipeCard = { }
     )
 }
