@@ -21,7 +21,6 @@ import com.example.recipemvvmandroidapp.ui.theme.LightBackground
 import com.example.recipemvvmandroidapp.ui.theme.Shapes
 import com.example.recipemvvmandroidapp.ui.viewModel.RecipeDetailViewModel
 import com.example.recipemvvmandroidapp.ui.viewModel.RecipeForDetailView
-import com.example.recipemvvmandroidapp.ui.viewModel.UiState
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
 import com.google.accompanist.imageloading.LoadPainter
@@ -29,64 +28,67 @@ import kotlinx.coroutines.Dispatchers
 
 @Composable
 fun CreateRecipeDetailView(
+    loadError: Boolean,
     painter: LoadPainter<Any>,
     recipe:  RecipeForDetailView
 ){
     Surface() {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp)
-        ) {
-            //Image
-            item{
-                when (painter.loadState) {
-                    is ImageLoadState.Success -> {
-                        Image(
-                            painter = painter,
-                            contentDescription = recipe.title,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(250.dp)
-                                .clip(Shapes.medium),
-                            contentScale = ContentScale.FillWidth
-                        )
-                    }
-                    // for preview
-                    ImageLoadState.Empty -> {
-                        Image(
-                            painter = painterResource(id = R.drawable.blank),
-                            contentDescription = "loadplaceholder",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(250.dp)
-                                .clip(Shapes.medium)
-                        )
-                    }
-                    else -> {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier
-                                .height(250.dp)
-                                .fillMaxWidth(),
-                        ){
-                            CircularProgressIndicator()
+        if(loadError){
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            ){
+                Text(
+                    text = "An error occurred",
+                    style = MaterialTheme.typography.h5
+                )
+            }
+        }
+        else{
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(12.dp)
+            ) {
+                //Image
+                item{
+                    when (painter.loadState) {
+                        is ImageLoadState.Success -> {
+                            Image(
+                                painter = painter,
+                                contentDescription = recipe.title,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(250.dp)
+                                    .clip(Shapes.medium),
+                                contentScale = ContentScale.FillWidth
+                            )
+                        }
+                        else -> {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .height(250.dp)
+                                    .fillMaxWidth(),
+                            ){
+                                CircularProgressIndicator()
+                            }
                         }
                     }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                //Title
-                Text(
-                    text = recipe.title,
-                    style = MaterialTheme.typography.h4
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                //Ingredients
-                recipe.ingredients.map {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    //Title
                     Text(
-                        text = "- $it",
-                        style = MaterialTheme.typography.body1
+                        text = recipe.title,
+                        style = MaterialTheme.typography.h4
                     )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    //Ingredients
+                    recipe.ingredients.map {
+                        Text(
+                            text = "- $it",
+                            style = MaterialTheme.typography.body1
+                        )
+                    }
                 }
             }
         }
@@ -98,33 +100,21 @@ fun RecipeDetailView(
     recipeDetailViewModel: RecipeDetailViewModel
 )
 {
-    when(val uiState = recipeDetailViewModel.uiState.collectAsState().value){
-        is UiState.Success -> {
-            val recipe = uiState.states
-            val painter = rememberCoilPainter(
-                request = recipe.featuredImage,
-                requestBuilder = {
-                    dispatcher(Dispatchers.IO)
-                },
-                fadeIn = true
-            )
-            CreateRecipeDetailView(
-                painter = painter,
-                recipe = recipe
-            )
-        }
-        is UiState.Error -> {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxWidth()
-            ){
-                Text(
-                    text = "An error occurred: ${uiState.exception}",
-                    style = MaterialTheme.typography.h5
-                )
-            }
-        }
-    }
+    val uiState = recipeDetailViewModel.uiState.collectAsState().value
+    val loadError = uiState.loadError
+    val recipe = uiState.recipeForDetailView
+    val painter = rememberCoilPainter(
+        request = recipe.featuredImage,
+        requestBuilder = {
+            dispatcher(Dispatchers.IO)
+        },
+        fadeIn = true
+    )
+    CreateRecipeDetailView(
+        loadError = loadError,
+        painter = painter,
+        recipe = recipe
+    )
 }
 
 @Preview
@@ -137,6 +127,7 @@ fun PreviewRecipeDetailView()
     )
 
     CreateRecipeDetailView(
+        loadError = false,
         painter = painter,
         recipe = RecipeForDetailView(
             title = "This is a title",

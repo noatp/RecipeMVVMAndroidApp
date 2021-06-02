@@ -23,10 +23,10 @@ class DiscoveryViewModel @Inject constructor(
     val uiState: StateFlow<DiscoveryViewStates> = uiMutableState
 
     init{
-        searchRecipeList()
+        getRecipeList()
     }
 
-    private fun searchRecipeList() {
+    private fun getRecipeList() {
         try{
             when(val useCaseResult = getRecipeListUseCase.execute("")){
                 is UseCaseResult.Success -> uiMutableState.value = uiMutableState.value.copy(
