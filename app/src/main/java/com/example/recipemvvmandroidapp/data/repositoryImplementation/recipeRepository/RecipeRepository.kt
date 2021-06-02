@@ -1,27 +1,42 @@
 package com.example.recipemvvmandroidapp.data.repositoryImplementation.recipeRepository
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.room.withTransaction
 import com.example.recipemvvmandroidapp.data.local.RecipeRoomDatabase
 import com.example.recipemvvmandroidapp.data.remote.RecipeNetworkService
+import com.example.recipemvvmandroidapp.domain.model.Recipe
 import com.example.recipemvvmandroidapp.domain.util.RecipeDTOMapper
 import com.example.recipemvvmandroidapp.domain.model.RecipeDTO
 import com.example.recipemvvmandroidapp.domain.repositoryInterface.RecipeRepositoryInterface
 import kotlinx.coroutines.flow.Flow
+import java.lang.Exception
 
 class RecipeRepository(
     private val recipeService: RecipeNetworkService,
     private val recipeDTOMapper: RecipeDTOMapper,
     private val recipeRoomDatabase: RecipeRoomDatabase
 ): RecipeRepositoryInterface {
+    private val recipeDAO = recipeRoomDatabase.recipeDAO()
+
+    private suspend fun getRecipeFromNetwork(id: Int): Recipe {
+        recipeService.getRecipeById(id).let{
+            recipeDAO.insertRecipe(it)
+            return it
+        }
+    }
 
     override suspend fun getRecipeById(id: Int): RecipeDTO {
-        val recipe = recipeService.getRecipeById(id)
-        val recipeDAO = recipeRoomDatabase.recipeDAO()
-        recipeDAO.insertRecipes(recipe)
-        return recipeDTOMapper
-            .mapDomainModelToDTO(recipeDAO.findByRecipeId(id))
+        return try{
+            recipeDTOMapper.mapDomainModelToDTO(
+                recipeDAO.findByRecipeId(id) ?: getRecipeFromNetwork(id)
+            )
+        } catch (exception: Exception){
+            Log.d("Exception in RecipeRepository: getRecipeById", "$exception")
+            throw exception
+        }
     }
 
     override fun searchForRecipes(query: String): Flow<PagingData<RecipeDTO>> {

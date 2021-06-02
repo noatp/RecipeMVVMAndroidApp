@@ -1,5 +1,6 @@
 package com.example.recipemvvmandroidapp.data.repositoryImplementation.recipeRepository
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.recipemvvmandroidapp.data.remote.RecipeNetworkService
@@ -22,19 +23,23 @@ class RecipePagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RecipeDTO> {
         val currentPage = params.key ?: INITIAL_PAGE_INDEX
-        val response = recipeDTOMapper
-            .mapListDomainModelToListDTO(
-                recipeService.searchForRecipes(currentPage, query)
-            )
+        return try{
+            val response = recipeService.searchForRecipes(currentPage, query)
+            val responseResults = recipeDTOMapper.mapListDomainModelToListDTO(response.results)
 
-        //Can also return a LoadResult.Error here to catch a network call error etc.
-        //However, UseCaseResult.Error is more preferable to catch an error, since the LoadResult.Error
-        //will forward the error to UI layer
-        return LoadResult.Page(
-            data = response,
-            prevKey = if(currentPage == INITIAL_PAGE_INDEX) null else currentPage - 1,
-            nextKey = if(response.isEmpty()) null else currentPage + 1
-        )
+            //Can also return a LoadResult.Error here to catch a network call error etc.
+            //However, UseCaseResult.Error is more preferable to catch an error, since the LoadResult.Error
+            //will forward the error to UI layer
+            LoadResult.Page(
+                data = responseResults,
+                prevKey = if(response.previous == null) null else currentPage - 1,
+                nextKey = if(response.next == null) null else currentPage + 1
+            )
+        } catch (exception: Exception){
+            Log.d("Exception in RecipePagingSource: load", "$exception")
+            LoadResult.Error(exception)
+        }
+
     }
 
     override fun getRefreshKey(state: PagingState<Int, RecipeDTO>): Int? {

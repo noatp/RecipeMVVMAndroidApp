@@ -11,9 +11,7 @@ class GetRecipeDetailUseCase(
     ): UseCaseResult<RecipeDTO>
     {
         return try{
-            UseCaseResult.Success(recipeRepository
-                .getRecipeById(id)
-            )
+            UseCaseResult.Success(recipeRepository.getRecipeById(id))
         } catch(exception: Exception){
             UseCaseResult.Error(exception)
         }

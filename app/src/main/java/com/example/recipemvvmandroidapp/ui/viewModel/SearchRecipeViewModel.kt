@@ -13,6 +13,8 @@ import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeListUseCase
 import com.example.recipemvvmandroidapp.domain.useCase.UseCaseResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
@@ -20,25 +22,52 @@ import javax.inject.Inject
 class SearchRecipeViewModel @Inject constructor(
     private val getRecipeListUseCase: GetRecipeListUseCase
 ): ViewModel() {
-    //data for search bar
-    val searchBarText: MutableState<String> = mutableStateOf("")
-    //event for search bar
-    val onSearchTextChanged: (String) -> Unit = {
-        searchBarText.value = it
-    }
+//    //data for search bar
+//    val searchBarText: MutableState<String> = mutableStateOf("")
+//
+//    //data for lazy list
+//    val pagingFlow: MutableState<Flow<PagingData<RecipeDTO>>> = mutableStateOf(flowOf(PagingData.empty()))
+//
+//    //scroll state for lazy list
+//    val lazyListState: MutableState<LazyListState> = mutableStateOf(LazyListState())
 
-    //data for lazy list
-    val pagingFlow: MutableState<Flow<PagingData<RecipeDTO>>> = mutableStateOf(flowOf(PagingData.empty()))
-
-    //scroll state for lazy list
-    val lazyListState: MutableState<LazyListState> = mutableStateOf(LazyListState())
+    private val uiMutableState = MutableStateFlow(SearchRecipeViewStates.empty)
+    val uiState: StateFlow<SearchRecipeViewStates> = uiMutableState
 
     val onSearch: () -> Unit = {
-        when(val useCaseResult = getRecipeListUseCase.execute(searchBarText.value)){
-            is UseCaseResult.Success -> pagingFlow.value = useCaseResult.resultValue.cachedIn(viewModelScope)
-            is UseCaseResult.Error -> Log.d("Debug: SearchRecipeViewModel",
-                useCaseResult.exception.toString()
+        try{
+            when(val useCaseResult = getRecipeListUseCase.execute(uiMutableState.value.searchBarText)){
+                is UseCaseResult.Success -> uiMutableState.value = uiMutableState.value.copy(
+                    pagingFlow = useCaseResult.resultValue.cachedIn(viewModelScope),
+                    loadError = false
+                )
+                is UseCaseResult.Error -> throw useCaseResult.exception
+            }
+        } catch (exception: Exception){
+            Log.d("Exception in SearchRecipeViewModel: onSearch", "$exception")
+            uiMutableState.value = uiMutableState.value.copy(
+                loadError = true
             )
         }
+
+    }
+    val onSearchTextChanged: (String) -> Unit = {
+        uiMutableState.value = uiMutableState.value.copy(
+            searchBarText = it
+        )
+    }
+}
+
+data class SearchRecipeViewStates(
+    val searchBarText: String,
+    val pagingFlow: Flow<PagingData<RecipeDTO>>,
+    val loadError: Boolean
+){
+    companion object{
+        val empty = SearchRecipeViewStates(
+            searchBarText = "",
+            pagingFlow = flowOf(PagingData.empty()),
+            loadError = false
+        )
     }
 }
