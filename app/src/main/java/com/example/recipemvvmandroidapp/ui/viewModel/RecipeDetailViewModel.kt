@@ -53,7 +53,6 @@ class RecipeDetailViewModel @Inject constructor(
                     loadError = true
                 )
             }
-
         }
     }
 }
