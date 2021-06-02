@@ -38,7 +38,8 @@ class SearchRecipeViewModel @Inject constructor(
         try{
             when(val useCaseResult = getRecipeListUseCase.execute(uiMutableState.value.searchBarText)){
                 is UseCaseResult.Success -> uiMutableState.value = uiMutableState.value.copy(
-                    pagingFlow = useCaseResult.resultValue.cachedIn(viewModelScope)
+                    pagingFlow = useCaseResult.resultValue.cachedIn(viewModelScope),
+                    loadError = false
                 )
                 is UseCaseResult.Error -> throw useCaseResult.exception
             }
