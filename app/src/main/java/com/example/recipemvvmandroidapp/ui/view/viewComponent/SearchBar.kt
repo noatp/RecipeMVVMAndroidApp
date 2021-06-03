@@ -45,7 +45,7 @@ fun SearchBar(
         keyboardActions = KeyboardActions(
             onSearch = {
                 onSearch()
-                focusManager.clearFocus(forcedClear = true) // close keyboard
+                focusManager.clearFocus(force = true) // close keyboard
             }),
         leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search Icon") },
         singleLine = singleLine,

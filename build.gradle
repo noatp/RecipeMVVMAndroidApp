@@ -1,11 +1,12 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        kotlin_version = '1.4.32'
-        compose_version = '1.0.0-beta07'
+        kotlin_version = '1.5.10' //for kotlin-gradle-plugin as well
+        compose_version = '1.0.0-beta08'
         hilt_version = '2.35'
         ktor_version = '1.5.3'
         room_version = "2.4.0-alpha02"
+        gradle_buildtool_version = "7.0.0-beta03"
     }
     repositories {
         gradlePluginPortal()

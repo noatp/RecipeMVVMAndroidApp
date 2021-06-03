@@ -17,11 +17,6 @@ import kotlinx.serialization.json.encodeToJsonElement
 class MainActivity : ComponentActivity() {
     private lateinit var router: RouterController
     override fun onCreate(savedInstanceState: Bundle?) {
-        val listOfString: List<String> = listOf("a", "n", "d")
-        val encoded = Json.encodeToJsonElement(listOfString)
-        val decoded = Json.decodeFromJsonElement<List<String>>(encoded)
-        println(encoded)
-        println(decoded[2])
         super.onCreate(savedInstanceState)
         setContent {
             val tabController = rememberNavController()
