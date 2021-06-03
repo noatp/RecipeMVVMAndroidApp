@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,46 +29,27 @@ import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun DiscoveryView(
-    lazyPagingItems: LazyPagingItems<RecipeDTO>,
-    onClickRecipeCard: (Int) -> Unit
+    recipeList: List<RecipeDTO>,
+    lazyListState: LazyListState,
+    checkIfNewPageIsNeeded: Unit,
+    onClickRecipeCard: (Int) -> Unit,
 )
 {
+    checkIfNewPageIsNeeded
     LazyColumn(
         modifier = Modifier.padding(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        state = lazyListState
     ) {
-        //show a loading indicator while waiting for the list to load
-        if(lazyPagingItems.loadState.refresh == LoadState.Loading){
-            item{
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxWidth()
-                ){
-                    CircularProgressIndicator()
-                }
-            }
-        }
 
-        items(lazyPagingItems = lazyPagingItems){ recipe ->
+        items(recipeList){ recipe ->
             RecipeCard(
-                recipeName = recipe!!.title,
+                recipeName = recipe.title,
                 recipeImageUrl = recipe.featuredImage,
                 onClick = {
                     onClickRecipeCard(recipe.id)
                 }
             )
-        }
-
-        //show a loading indicator at the bottom of the list while appending new items to the list
-        if(lazyPagingItems.loadState.append == LoadState.Loading){
-            item {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxWidth()
-                ){
-                    CircularProgressIndicator()
-                }
-            }
         }
     }
 }
@@ -77,12 +60,16 @@ fun Dependency.View.DiscoveryView(
 )
 {
     val discoveryViewModel: DiscoveryViewModel = viewModel.discoveryViewModel()
-    val lazyPagingItems = discoveryViewModel.pagingFlow.value.collectAsLazyPagingItems()
+    val recipeList = discoveryViewModel.recipeList.value
+    val lazyListState = discoveryViewModel.lazyListState
+    val checkIfNewPageIsNeeded = discoveryViewModel.checkIfNewPageIsNeeded()
     DiscoveryView(
-        lazyPagingItems = lazyPagingItems,
+        recipeList = recipeList,
+        lazyListState = lazyListState,
+        checkIfNewPageIsNeeded = checkIfNewPageIsNeeded,
         onClickRecipeCard = {recipeId: Int ->
             router.navigateToRecipeDetailView(recipeId)
-        }
+        },
     )
 }
 
@@ -91,7 +78,9 @@ fun Dependency.View.DiscoveryView(
 fun PreviewDiscoveryView()
 {
     DiscoveryView(
-        lazyPagingItems = flowOf(PagingData.empty<RecipeDTO>()).collectAsLazyPagingItems(),
-        onClickRecipeCard = {}
+        recipeList = listOf(),
+        lazyListState = LazyListState(),
+        checkIfNewPageIsNeeded = Unit,
+        onClickRecipeCard = { },
     )
 }

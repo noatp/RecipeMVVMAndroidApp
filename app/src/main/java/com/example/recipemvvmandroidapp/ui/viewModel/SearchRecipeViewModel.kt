@@ -21,27 +21,27 @@ import kotlinx.coroutines.launch
 class SearchRecipeViewModel(
     private val getRecipeListUseCase: GetRecipeListUseCase
 ): ViewModel() {
-    //data for search bar
-    val searchBarText: MutableState<String> = mutableStateOf("")
-    //event for search bar
-    val onSearchTextChanged: (String) -> Unit = {
-        searchBarText.value = it
-    }
-
-    //data for lazy list
-    var pagingFlow: MutableState<Flow<PagingData<RecipeDTO>>> = mutableStateOf(flowOf(PagingData.empty()))
-
-    val onSearch: () -> Unit = {
-        viewModelScope.launch(Dispatchers.IO) {
-            when(val useCaseResult = getRecipeListUseCase.execute(query = searchBarText.value))
-            {
-                is UseCaseResult.Success -> pagingFlow.value = useCaseResult.resultValue.cachedIn(viewModelScope)
-                is UseCaseResult.Error -> Log.d("Debug: SearchRecipeViewModel",
-                    useCaseResult.exception.toString()
-                )
-            }
-        }
-    }
+//    //data for search bar
+//    val searchBarText: MutableState<String> = mutableStateOf("")
+//    //event for search bar
+//    val onSearchTextChanged: (String) -> Unit = {
+//        searchBarText.value = it
+//    }
+//
+//    //data for lazy list
+//    var pagingFlow: MutableState<Flow<PagingData<RecipeDTO>>> = mutableStateOf(flowOf(PagingData.empty()))
+//
+//    val onSearch: () -> Unit = {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            when(val useCaseResult = getRecipeListUseCase.execute(query = searchBarText.value))
+//            {
+//                is UseCaseResult.Success -> pagingFlow.value = useCaseResult.resultValue.cachedIn(viewModelScope)
+//                is UseCaseResult.Error -> Log.d("Debug: SearchRecipeViewModel",
+//                    useCaseResult.exception.toString()
+//                )
+//            }
+//        }
+//    }
 }
 
 class SearchRecipeViewModelFactory(

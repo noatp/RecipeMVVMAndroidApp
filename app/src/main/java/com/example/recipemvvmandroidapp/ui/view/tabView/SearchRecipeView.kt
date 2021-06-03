@@ -85,20 +85,20 @@ fun Dependency.View.SearchRecipeView(
     router: RouterController
 )
 {
-    val searchRecipeViewModel = viewModel.searchRecipeViewModel()
-    val onSearchTextChanged = searchRecipeViewModel.onSearchTextChanged
-    val searchBarText = searchRecipeViewModel.searchBarText.value
-    val lazyPagingItems = searchRecipeViewModel.pagingFlow.value.collectAsLazyPagingItems()
-    val onSearch = searchRecipeViewModel.onSearch
-    SearchRecipeView(
-        searchBarText = searchBarText,
-        onSearchTextChanged = onSearchTextChanged,
-        lazyPagingItems = lazyPagingItems,
-        onSearch = onSearch,
-        onClickRecipeCard = {recipeId: Int ->
-            router.navigateToRecipeDetailView(recipeId)
-        }
-    )
+//    val searchRecipeViewModel = viewModel.searchRecipeViewModel()
+//    val onSearchTextChanged = searchRecipeViewModel.onSearchTextChanged
+//    val searchBarText = searchRecipeViewModel.searchBarText.value
+//    val lazyPagingItems = searchRecipeViewModel.pagingFlow.value.collectAsLazyPagingItems()
+//    val onSearch = searchRecipeViewModel.onSearch
+//    SearchRecipeView(
+//        searchBarText = searchBarText,
+//        onSearchTextChanged = onSearchTextChanged,
+//        lazyPagingItems = lazyPagingItems,
+//        onSearch = onSearch,
+//        onClickRecipeCard = {recipeId: Int ->
+//            router.navigateToRecipeDetailView(recipeId)
+//        }
+//    )
 }
 
 @Preview

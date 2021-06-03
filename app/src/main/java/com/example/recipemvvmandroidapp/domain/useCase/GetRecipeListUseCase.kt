@@ -10,14 +10,13 @@ import kotlinx.coroutines.flow.Flow
 class GetRecipeListUseCase(
     private val recipeRepository: RecipeRepository
 ) {
-    fun execute(
+    suspend fun execute(
+        page: Int,
         query: String
-    ): UseCaseResult<Flow<PagingData<RecipeDTO>>>
+    ): UseCaseResult<List<RecipeDTO>>
     {
         return try{
-            UseCaseResult.Success(recipeRepository
-                .searchForRecipes(query)
-            )
+            UseCaseResult.Success(recipeRepository.searchForRecipes(page, query))
         } catch(exception: Exception){
             UseCaseResult.Error(exception)
         }
