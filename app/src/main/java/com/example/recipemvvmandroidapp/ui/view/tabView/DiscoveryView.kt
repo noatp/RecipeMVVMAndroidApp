@@ -9,7 +9,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,17 +34,18 @@ import kotlinx.coroutines.flow.flowOf
 fun DiscoveryView(
     recipeList: List<RecipeDTO>,
     lazyListState: LazyListState,
-    checkIfNewPageIsNeeded: Unit,
+    isLoading: Boolean,
+    loadError: Boolean,
+    checkIfNewPageIsNeeded: () -> Unit,
     onClickRecipeCard: (Int) -> Unit,
 )
 {
-    checkIfNewPageIsNeeded
+    checkIfNewPageIsNeeded()
     LazyColumn(
         modifier = Modifier.padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         state = lazyListState
     ) {
-
         items(recipeList){ recipe ->
             RecipeCard(
                 recipeName = recipe.title,
@@ -50,6 +54,29 @@ fun DiscoveryView(
                     onClickRecipeCard(recipe.id)
                 }
             )
+        }
+        if(isLoading){
+            item{
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    CircularProgressIndicator()
+                }
+            }
+        }
+        if(loadError){
+            item{
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    Text(
+                        text = "An error occurred",
+                        style = MaterialTheme.typography.h5
+                    )
+                }
+            }
         }
     }
 }
@@ -60,12 +87,17 @@ fun Dependency.View.DiscoveryView(
 )
 {
     val discoveryViewModel: DiscoveryViewModel = viewModel.discoveryViewModel()
-    val recipeList = discoveryViewModel.recipeList.value
-    val lazyListState = discoveryViewModel.lazyListState
-    val checkIfNewPageIsNeeded = discoveryViewModel.checkIfNewPageIsNeeded()
+    val uiState = discoveryViewModel.uiState.collectAsState().value
+    val recipeList = uiState.recipeList
+    val lazyListState = uiState.lazyListState
+    val isLoading = uiState.isLoading
+    val loadError = uiState.loadError
+    val checkIfNewPageIsNeeded = discoveryViewModel.checkIfNewPageIsNeeded
     DiscoveryView(
         recipeList = recipeList,
         lazyListState = lazyListState,
+        isLoading = isLoading,
+        loadError = loadError,
         checkIfNewPageIsNeeded = checkIfNewPageIsNeeded,
         onClickRecipeCard = {recipeId: Int ->
             router.navigateToRecipeDetailView(recipeId)
@@ -80,7 +112,9 @@ fun PreviewDiscoveryView()
     DiscoveryView(
         recipeList = listOf(),
         lazyListState = LazyListState(),
-        checkIfNewPageIsNeeded = Unit,
+        isLoading = false,
+        loadError = false,
+        checkIfNewPageIsNeeded = { },
         onClickRecipeCard = { },
     )
 }

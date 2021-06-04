@@ -16,6 +16,9 @@ import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeListUseCase
 import com.example.recipemvvmandroidapp.domain.useCase.UseCaseResult
 import com.example.recipemvvmandroidapp.domain.useCase.getRecipeListUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 const val API_PAGE_SIZE = 30
@@ -23,68 +26,70 @@ const val API_PAGE_SIZE = 30
 class DiscoveryViewModel(
     private val getRecipeListUseCase: GetRecipeListUseCase
 ): ViewModel(){
-    var recipeList: MutableState<List<RecipeDTO>> = mutableStateOf(listOf())
+    private val uiMutableState = MutableStateFlow(DiscoveryViewStates.empty)
+    val uiState: StateFlow<DiscoveryViewStates> = uiMutableState
 
-    val lazyListState: LazyListState = LazyListState()
+    private var page = 0
 
-    private var page = 1
-
-    val isLoading = mutableStateOf(false)
-
-    init{
-        initialLoad()
-    }
-
-    private fun initialLoad(){
-        viewModelScope.launch(Dispatchers.IO){
-            when(val useCaseResult = getRecipeListUseCase.execute(
-                page = 1,
-                query = "a"
-            ))
-            {
-                is UseCaseResult.Success -> {
-                    recipeList.value = useCaseResult.resultValue
-                }
-                is UseCaseResult.Error -> Log.d("Debug: DiscoveryViewModel",
-                    useCaseResult.exception.toString()
+    val checkIfNewPageIsNeeded: () -> Unit = {
+        //this check will let pagination always load 1 page a head
+        //ex: firstVisibleItemIndex = 1, page = 1 => 1 + 30 > 1 * 30 => load page 2
+        if(uiMutableState.value.lazyListState.firstVisibleItemIndex + API_PAGE_SIZE > page * API_PAGE_SIZE){
+            if(!uiMutableState.value.isLoading){
+                uiMutableState.value = uiMutableState.value.copy(
+                    isLoading = true
                 )
-            }
-        }
-    }
-
-    fun checkIfNewPageIsNeeded(){
-        if(lazyListState.firstVisibleItemIndex + API_PAGE_SIZE > page * API_PAGE_SIZE){
-            if(!isLoading.value){
-                isLoading.value = true
                 page += 1
-                if(page > 1){
-                    viewModelScope.launch(Dispatchers.IO){
-                        when(val useCaseResult = getRecipeListUseCase.execute(
-                            page = page,
-                            query = "a"
-                        ))
-                        {
-                            is UseCaseResult.Success -> {
-                                appendNewPage(useCaseResult.resultValue)
-                                isLoading.value = false
-                            }
-                            is UseCaseResult.Error -> {
-                                isLoading.value = false
-                                Log.d("Debug: DiscoveryViewModel",
-                                    useCaseResult.exception.toString()
-                                )
-                            }
+                viewModelScope.launch(Dispatchers.IO){
+                    delay(2500)
+                    when(val useCaseResult = getRecipeListUseCase.execute(
+                        page = page,
+                        query = "a"
+                    ))
+                    {
+                        is UseCaseResult.Success -> {
+                            uiMutableState.value = uiMutableState.value.copy(
+                                loadError = false
+                            )
+                            appendNewPage(useCaseResult.resultValue)
+                        }
+                        is UseCaseResult.Error -> {
+                            uiMutableState.value = uiMutableState.value.copy(
+                                loadError = true
+                            )
+                            Log.d("Exception in DiscoveryViewModel: checkIfNewPageIsNeeded", "${useCaseResult.exception}")
                         }
                     }
+                    uiMutableState.value = uiMutableState.value.copy(
+                        isLoading = false
+                    )
                 }
             }
         }
     }
 
     private fun appendNewPage(newRecipeList: List<RecipeDTO>){
-        val currentRecipeList = ArrayList(recipeList.value)
+        val currentRecipeList = ArrayList(uiMutableState.value.recipeList)
         currentRecipeList.addAll(newRecipeList)
-        recipeList.value = currentRecipeList
+        uiMutableState.value = uiMutableState.value.copy(
+            recipeList = currentRecipeList
+        )
+    }
+}
+
+data class DiscoveryViewStates(
+    val recipeList: List<RecipeDTO>,
+    val lazyListState: LazyListState,
+    val isLoading: Boolean,
+    val loadError: Boolean
+){
+    companion object{
+        val empty = DiscoveryViewStates(
+            recipeList = listOf(),
+            lazyListState = LazyListState(),
+            isLoading = false,
+            loadError = false
+        )
     }
 }
 
