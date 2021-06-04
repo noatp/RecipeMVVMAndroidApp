@@ -3,15 +3,12 @@ package com.example.recipemvvmandroidapp.ui.viewModel
 import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recipemvvmandroidapp.domain.model.RecipeDTO
 import com.example.recipemvvmandroidapp.dependency.Dependency
-import com.example.recipemvvmandroidapp.domain.model.Recipe
 import com.example.recipemvvmandroidapp.domain.useCase.GetRecipeListUseCase
 import com.example.recipemvvmandroidapp.domain.useCase.UseCaseResult
 import com.example.recipemvvmandroidapp.domain.useCase.getRecipeListUseCase
@@ -29,21 +26,21 @@ class DiscoveryViewModel(
     private val uiMutableState = MutableStateFlow(DiscoveryViewStates.empty)
     val uiState: StateFlow<DiscoveryViewStates> = uiMutableState
 
-    private var page = 0
+    private var mostRecentlyLoadedPage = 0
 
     val checkIfNewPageIsNeeded: () -> Unit = {
         //this check will let pagination always load 1 page a head
         //ex: firstVisibleItemIndex = 1, page = 1 => 1 + 30 > 1 * 30 => load page 2
-        if(uiMutableState.value.lazyListState.firstVisibleItemIndex + API_PAGE_SIZE > page * API_PAGE_SIZE){
+        if(uiMutableState.value.lazyListState.firstVisibleItemIndex + API_PAGE_SIZE > mostRecentlyLoadedPage * API_PAGE_SIZE){
             if(!uiMutableState.value.isLoading){
                 uiMutableState.value = uiMutableState.value.copy(
                     isLoading = true
                 )
-                page += 1
+                mostRecentlyLoadedPage += 1
                 viewModelScope.launch(Dispatchers.IO){
                     delay(2500)
                     when(val useCaseResult = getRecipeListUseCase.execute(
-                        page = page,
+                        page = mostRecentlyLoadedPage,
                         query = "a"
                     ))
                     {
