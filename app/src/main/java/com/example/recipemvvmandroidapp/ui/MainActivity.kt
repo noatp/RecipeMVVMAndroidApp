@@ -3,6 +3,7 @@ package com.example.recipemvvmandroidapp.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.navigation.compose.rememberNavController
 import com.example.recipemvvmandroidapp.data.remote.RecipeNetworkService
 import com.example.recipemvvmandroidapp.dependency.Dependency
@@ -19,6 +20,7 @@ object Singleton{
 class MainActivity : ComponentActivity() {
     private val dependency: Dependency = Singleton.appDependency
     private lateinit var router: RouterController
+    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

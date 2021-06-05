@@ -2,6 +2,7 @@ package com.example.recipemvvmandroidapp.ui.view
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomAppBar
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,6 +19,7 @@ import com.example.recipemvvmandroidapp.ui.view.tabView.DiscoveryView
 import com.example.recipemvvmandroidapp.ui.view.tabView.SearchRecipeView
 import com.example.recipemvvmandroidapp.ui.view.viewComponent.NavTabRow
 
+@ExperimentalMaterialApi
 @Composable
 fun HomeView(
     router: RouterController,
@@ -78,6 +80,7 @@ fun HomeView(
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 fun Dependency.View.HomeView(router: RouterController)
 {

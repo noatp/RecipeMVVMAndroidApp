@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -13,10 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.paging.LoadState
-import androidx.paging.PagingData
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import com.example.recipemvvmandroidapp.domain.model.RecipeDTO
 import com.example.recipemvvmandroidapp.dependency.Dependency
 import com.example.recipemvvmandroidapp.ui.router.RouterController
@@ -25,6 +22,7 @@ import com.example.recipemvvmandroidapp.ui.viewModel.searchRecipeViewModel
 import com.example.recipemvvmandroidapp.ui.view.viewComponent.SearchBar
 import kotlinx.coroutines.flow.flowOf
 
+@ExperimentalMaterialApi
 @Composable
 fun SearchRecipeView(
     onSearchBarTextChanged: (String) -> Unit,
@@ -88,6 +86,7 @@ fun SearchRecipeView(
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 fun Dependency.View.SearchRecipeView(
     router: RouterController
@@ -116,6 +115,7 @@ fun Dependency.View.SearchRecipeView(
     )
 }
 
+@ExperimentalMaterialApi
 @Preview
 @Composable
 fun PreviewSearchRecipeView()
