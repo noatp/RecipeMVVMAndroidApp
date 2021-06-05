@@ -27,6 +27,7 @@ class SearchRecipeViewModel(
     val uiState: StateFlow<SearchRecipeViewStates> = uiMutableState
 
     private var mostRecentlyLoadedPage = 0
+    private var hasNextPage: Boolean = true
 
     private var currentNetworkJob: Job = Job()
 
@@ -52,34 +53,39 @@ class SearchRecipeViewModel(
         //ex: firstVisibleItemIndex = 1, page = 1 => 1 + 30 > 1 * 30 => load page 2
         if(uiMutableState.value.lazyListState.firstVisibleItemIndex + API_PAGE_SIZE > mostRecentlyLoadedPage * API_PAGE_SIZE){
             if(!uiMutableState.value.isLoading){
-                uiMutableState.value = uiMutableState.value.copy(
-                    isLoading = true
-                )
-                mostRecentlyLoadedPage += 1
-                currentNetworkJob = viewModelScope.launch(Dispatchers.IO){
-                    delay(1000)
-                    println("Job launch with query: ${uiMutableState.value.searchBarText}")
-                    when(val useCaseResult = getRecipeListUseCase.execute(
-                        page = mostRecentlyLoadedPage,
-                        query = uiMutableState.value.searchBarText
-                    ))
-                    {
-                        is UseCaseResult.Success -> {
-                            uiMutableState.value = uiMutableState.value.copy(
-                                loadError = false
-                            )
-                            appendNewPage(useCaseResult.resultValue)
-                        }
-                        is UseCaseResult.Error -> {
-                            uiMutableState.value = uiMutableState.value.copy(
-                                loadError = true
-                            )
-                            Log.d("Exception in SearchRecipeViewmodel: checkIfNewPageIsNeeded", "${useCaseResult.exception}")
-                        }
-                    }
+                if(hasNextPage){
                     uiMutableState.value = uiMutableState.value.copy(
-                        isLoading = false
+                        isLoading = true
                     )
+                    mostRecentlyLoadedPage += 1
+                    currentNetworkJob = viewModelScope.launch(Dispatchers.IO){
+                        delay(100)
+                        println("Job launch with query: ${uiMutableState.value.searchBarText}")
+                        when(val useCaseResult = getRecipeListUseCase.execute(
+                            page = mostRecentlyLoadedPage,
+                            query = uiMutableState.value.searchBarText
+                        ))
+                        {
+                            is UseCaseResult.Success -> {
+                                uiMutableState.value = uiMutableState.value.copy(
+                                    loadError = false
+                                )
+                                hasNextPage = useCaseResult.resultValue.hasNextPage
+                                appendNewPage(useCaseResult.resultValue.recipeList)
+                            }
+                            is UseCaseResult.Error -> {
+                                if(useCaseResult.exception !is CancellationException){
+                                    uiMutableState.value = uiMutableState.value.copy(
+                                        loadError = true
+                                    )
+                                }
+                                Log.d("Exception in SearchRecipeViewmodel: checkIfNewPageIsNeeded", "${useCaseResult.exception}")
+                            }
+                        }
+                        uiMutableState.value = uiMutableState.value.copy(
+                            isLoading = false
+                        )
+                    }
                 }
             }
         }

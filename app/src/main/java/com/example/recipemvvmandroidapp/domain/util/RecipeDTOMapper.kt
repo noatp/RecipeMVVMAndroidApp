@@ -3,10 +3,9 @@ package com.example.recipemvvmandroidapp.domain.util
 import com.example.recipemvvmandroidapp.domain.model.RecipeDTO
 import com.example.recipemvvmandroidapp.dependency.Dependency
 import com.example.recipemvvmandroidapp.domain.model.Recipe
-import com.example.recipemvvmandroidapp.domain.util.DTOMapper
 
-class RecipeDTOMapper: DTOMapper<RecipeDTO, Recipe> {
-    override fun mapDomainModelToDTO(domainModel: Recipe): RecipeDTO {
+class RecipeDTOMapper(){
+    fun mapDomainModelToDTO(domainModel: Recipe): RecipeDTO {
         return RecipeDTO(
             id = domainModel.id,
             title = domainModel.title,
@@ -15,7 +14,7 @@ class RecipeDTOMapper: DTOMapper<RecipeDTO, Recipe> {
         )
     }
 
-    override fun mapListDomainModelToListDTO(listDomainModel: List<Recipe>): List<RecipeDTO> {
+    fun mapListDomainModelToListDTO(listDomainModel: List<Recipe>): List<RecipeDTO> {
         return listDomainModel.map { domainModel: Recipe ->
             mapDomainModelToDTO(domainModel = domainModel)
         }

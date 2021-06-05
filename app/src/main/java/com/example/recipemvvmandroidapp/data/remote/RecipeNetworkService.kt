@@ -32,14 +32,14 @@ class RecipeNetworkService: RecipeNetworkServiceInterface {
         }
     }
 
-    override suspend fun searchForRecipes(page: Int, query: String): List<Recipe>{
+    override suspend fun searchForRecipes(page: Int, query: String): Response{
         try{
             return client.get<Response>(urlString = "$apiUrl/search/?page=$page&query=$query")
             {
                 headers{
                     append("Authorization", authToken)
                 }
-            }.results
+            }
         } catch (exception: Exception){
             Log.d("Rethrow exception in RecipeNetworkService: searchForRecipes", "$exception")
             throw exception

@@ -26,40 +26,49 @@ class DiscoveryViewModel(
     private val uiMutableState = MutableStateFlow(DiscoveryViewStates.empty)
     val uiState: StateFlow<DiscoveryViewStates> = uiMutableState
 
-    private var mostRecentlyLoadedPage = 0
+    private var mostRecentlyLoadedPage: Int = 0
+    private var hasNextPage: Boolean = true
+
+    //I won't be using this for now
+    //private var hasPreviousPage = false
 
     val checkIfNewPageIsNeeded: () -> Unit = {
         //this check will let pagination always load 1 page a head
         //ex: firstVisibleItemIndex = 1, page = 1 => 1 + 30 > 1 * 30 => load page 2
         if(uiMutableState.value.lazyListState.firstVisibleItemIndex + API_PAGE_SIZE > mostRecentlyLoadedPage * API_PAGE_SIZE){
+            //check if the there is already a fetch in process, can check if coroutine job is active or not?
             if(!uiMutableState.value.isLoading){
-                uiMutableState.value = uiMutableState.value.copy(
-                    isLoading = true
-                )
-                mostRecentlyLoadedPage += 1
-                viewModelScope.launch(Dispatchers.IO){
-                    delay(2500)
-                    when(val useCaseResult = getRecipeListUseCase.execute(
-                        page = mostRecentlyLoadedPage,
-                        query = "a"
-                    ))
-                    {
-                        is UseCaseResult.Success -> {
-                            uiMutableState.value = uiMutableState.value.copy(
-                                loadError = false
-                            )
-                            appendNewPage(useCaseResult.resultValue)
-                        }
-                        is UseCaseResult.Error -> {
-                            uiMutableState.value = uiMutableState.value.copy(
-                                loadError = true
-                            )
-                            Log.d("Exception in DiscoveryViewModel: checkIfNewPageIsNeeded", "${useCaseResult.exception}")
-                        }
-                    }
+                //check if the current page has a next page to prevent a load error
+                if(hasNextPage){
                     uiMutableState.value = uiMutableState.value.copy(
-                        isLoading = false
+                        isLoading = true
                     )
+                    mostRecentlyLoadedPage += 1
+                    viewModelScope.launch(Dispatchers.IO){
+                        delay(2500)
+                        when(val useCaseResult = getRecipeListUseCase.execute(
+                            page = mostRecentlyLoadedPage,
+                            query = "a"
+                        ))
+                        {
+                            is UseCaseResult.Success -> {
+                                uiMutableState.value = uiMutableState.value.copy(
+                                    loadError = false
+                                )
+                                hasNextPage = useCaseResult.resultValue.hasNextPage
+                                appendNewPage(useCaseResult.resultValue.recipeList)
+                            }
+                            is UseCaseResult.Error -> {
+                                uiMutableState.value = uiMutableState.value.copy(
+                                    loadError = true
+                                )
+                                Log.d("Exception in DiscoveryViewModel: checkIfNewPageIsNeeded", "${useCaseResult.exception}")
+                            }
+                        }
+                        uiMutableState.value = uiMutableState.value.copy(
+                            isLoading = false
+                        )
+                    }
                 }
             }
         }
