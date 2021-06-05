@@ -45,7 +45,7 @@ class DiscoveryViewModel(
                     )
                     mostRecentlyLoadedPage += 1
                     viewModelScope.launch(Dispatchers.IO){
-                        delay(2500)
+                        delay(500)
                         when(val useCaseResult = getRecipeListUseCase.execute(
                             page = mostRecentlyLoadedPage,
                             query = "a"

@@ -46,6 +46,7 @@ class SearchRecipeViewModel(
             loadError = false
         )
         mostRecentlyLoadedPage = 0
+        hasNextPage = true
     }
 
     val checkIfNewPageIsNeeded: () -> Unit = {
