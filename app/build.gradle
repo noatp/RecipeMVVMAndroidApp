@@ -9,7 +9,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.example.recipemvvmandroidapp"
+        applicationId "com.noat.recipe_food2fork"
         minSdk 26
         targetSdk 30
         versionCode 1
