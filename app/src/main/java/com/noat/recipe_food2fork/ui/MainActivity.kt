@@ -13,16 +13,33 @@ import com.noat.recipe_food2fork.dependency.Dependency
 import com.noat.recipe_food2fork.ui.router.RouterController
 import com.noat.recipe_food2fork.ui.view.HomeView
 
-class ThisApplication: Application(){
-    private val context: Context = applicationContext
-    fun getAppContext(): Context{
-        return context
+class ThisApplication : Application() {
+
+    init {
+        instance = this
     }
+
+    companion object {
+        private var instance: ThisApplication? = null
+
+        fun applicationContext() : Context {
+            return instance!!.applicationContext
+        }
+    }
+
+//    override fun onCreate() {
+//        super.onCreate()
+//        // initialize for any
+//
+//        // Use ApplicationContext.
+//        // example: SharedPreferences etc...
+////        val context: Context = ThisApplication.applicationContext()
+//    }
 }
 
 object Singleton{
     private val recipeNetworkService: RecipeNetworkService = RecipeNetworkService()
-    private val recipeLocalDatabase: RecipeLocalDatabase = RecipeLocalDatabase(ThisApplication().getAppContext()`)
+    private val recipeLocalDatabase: RecipeLocalDatabase = RecipeLocalDatabase(ThisApplication.applicationContext())
     val appDependency= Dependency(
         recipeNetworkService = recipeNetworkService,
         recipeLocalDatabase = recipeLocalDatabase

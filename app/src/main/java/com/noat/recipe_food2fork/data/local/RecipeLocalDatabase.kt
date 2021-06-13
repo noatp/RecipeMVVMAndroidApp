@@ -42,7 +42,7 @@ class RecipeLocalDatabase(
     private fun recipeTableToRecipeMapper(recipeTable: RecipeTable): Recipe{
         return Recipe(
             id = recipeTable.id,
-            title = recipeTable.ingredients,
+            title = recipeTable.title,
             publisher = recipeTable.publisher,
             featuredImage = recipeTable.featured_image,
             rating = recipeTable.rating,
@@ -53,10 +53,12 @@ class RecipeLocalDatabase(
         )
     }
 
-    fun insertRecipe(recipe: Recipe){
-        recipeQueries.insertRecipe(
-            recipeToRecipeTableMapper(recipe = recipe)
-        )
+    suspend fun insertRecipe(recipe: Recipe){
+        withContext(Dispatchers.IO){
+            recipeQueries.insertRecipe(
+                recipeToRecipeTableMapper(recipe = recipe)
+            )
+        }
     }
 
     suspend fun searchForRecipes(page: Int, query: String): SearchResponse{
