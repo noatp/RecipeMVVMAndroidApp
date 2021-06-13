@@ -77,6 +77,7 @@ dependencies {
 
     //sqldelight
     implementation "com.squareup.sqldelight:android-driver:1.5.0"
+    implementation "com.squareup.sqldelight:coroutines-extensions:1.5.0"
 
     //testing
     testImplementation 'junit:junit:4.13.2'
@@ -87,7 +88,7 @@ dependencies {
 
 sqldelight{
     RecipeDatabase{
-        packageName = "com.noat.recipe_food2fork.data.local"
+        packageName = "com.noat.recipe_food2fork.database"
         sourceFolders = ["sqldelight"]
         dialect = "sqlite:3.24"
     }

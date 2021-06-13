@@ -23,46 +23,41 @@ class RecipeRepository(
     private val recipeDTOMapper: RecipeDTOMapper,
     private val recipePageDTOMapper: RecipePageDTOMapper
 ): RecipeRepositoryInterface {
-    private suspend fun getRecipeByIdFromNetwork(id: Int): Recipe {
-        try{
-            val recipeFromNetwork = recipeNetworkService.getRecipeById(id)
-            recipeLocalDatabase.insertRecipe(recipeFromNetwork)
-            return recipeFromNetwork
-        } catch (exception: Exception){
-            Log.d("Rethrow exception in RecipeRepository: getRecipeByIdFromNetwork", "$exception")
-            throw exception
-        }
+
+    private val currentQuery: String = ""
+
+    private suspend fun storeRecipeFromNetwork(id: Int) {
+        val recipeFromNetwork = recipeNetworkService.getRecipeById(id)
+        recipeLocalDatabase.insertRecipe(recipeFromNetwork)
     }
 
     private suspend fun getRecipeByIdFromDB(id: Int): Recipe{
-        try{
-            return recipeLocalDatabase.getRecipeById(id)
-        } catch (exception: Exception){
-            Log.d("Rethrow exception in RecipeRepository: getRecipeByIdFromDB", "$exception")
-            throw exception
-        }
+        return recipeLocalDatabase.getRecipeById(id)
     }
 
     override suspend fun getRecipeById(id: Int): RecipeDTO {
-        return try{
-            recipeDTOMapper.mapDomainModelToDTO(getRecipeByIdFromNetwork(id))
-        } catch (networkException: Exception){
-            try{
-                recipeDTOMapper.mapDomainModelToDTO(getRecipeByIdFromDB(id))
-            } catch (dbException: Exception){
-                Log.d("Rethrow exception in RecipeRepository: getRecipeById", "$dbException")
-                throw dbException
+        storeRecipeFromNetwork(id)
+        return recipeDTOMapper.mapDomainModelToDTO(getRecipeByIdFromDB(id))
+    }
+
+    //this suspend function will go through all the result pages of a query,
+    //copy all the data into local database
+    private suspend fun searchForRecipesFromNetwork(query: String){
+        var currentPage = 1
+        do{
+            var currentResponse = recipeNetworkService.searchForRecipes(currentPage, query)
+            currentResponse.results.map{ recipe: Recipe ->
+                recipeLocalDatabase.insertRecipe(recipe = recipe)
             }
-        }
+            currentPage++
+        } while (currentResponse.next != null)
     }
 
     override suspend fun searchForRecipes(page: Int, query: String): RecipePageDTO {
-        try{
-            return(recipePageDTOMapper.mapResponseToRecipeDTOMapper(recipeNetworkService.searchForRecipes(page, query)))
-        } catch (exception: Exception){
-            Log.d("Rethrow exception in RecipeRepository: searchForRecipes", "$exception")
-            throw exception
+        if(query != currentQuery){
+            searchForRecipesFromNetwork(query) // insert recipe list from network into local db
         }
+        return(recipePageDTOMapper.mapResponseToRecipeDTOMapper(recipeLocalDatabase.searchForRecipes(page, query)))
     }
 }
 

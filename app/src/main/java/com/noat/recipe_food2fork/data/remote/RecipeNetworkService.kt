@@ -8,7 +8,7 @@ import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
 
-class RecipeNetworkService: RecipeNetworkServiceInterface {
+class RecipeNetworkService {
     private val authToken = "Token 9c8b06d329136da358c2d00e76946b0111ce2c48"
     private val apiUrl = "https://food2fork.ca/api/recipe"
 
@@ -20,30 +20,19 @@ class RecipeNetworkService: RecipeNetworkServiceInterface {
         }
     }
 
-    override suspend fun getRecipeById(id: Int): Recipe {
-        try{
-            return client.get(urlString = "$apiUrl/get/?id=$id")
-            {
-                headers{ append("Authorization", authToken) }
-            }
-        } catch (exception: Exception){
-            Log.d("Rethrow exception in RecipeNetworkService: getRecipeById", "$exception")
-            throw exception
+    suspend fun getRecipeById(id: Int): Recipe {
+        return client.get(urlString = "$apiUrl/get/?id=$id")
+        {
+            headers{ append("Authorization", authToken) }
         }
     }
 
-    override suspend fun searchForRecipes(page: Int, query: String): SearchResponse {
-        try{
-            return client.get<SearchResponse>(urlString = "$apiUrl/search/?page=$page&query=$query")
-            {
-                headers{
-                    append("Authorization", authToken)
-                }
+    suspend fun searchForRecipes(page: Int, query: String): SearchResponse {
+        return client.get<SearchResponse>(urlString = "$apiUrl/search/?page=$page&query=$query")
+        {
+            headers{
+                append("Authorization", authToken)
             }
-        } catch (exception: Exception){
-            Log.d("Rethrow exception in RecipeNetworkService: searchForRecipes", "$exception")
-            throw exception
         }
-
     }
 }

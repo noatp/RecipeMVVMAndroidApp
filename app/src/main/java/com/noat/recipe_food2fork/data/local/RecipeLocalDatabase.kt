@@ -2,9 +2,12 @@ package com.noat.recipe_food2fork.data.local
 
 import android.content.Context
 import com.noat.recipe_food2fork.data.SearchResponse
+import com.noat.recipe_food2fork.database.RecipeDatabase
 import com.noat.recipe_food2fork.domain.model.Recipe
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
+import com.squareup.sqldelight.runtime.coroutines.asFlow
+import com.squareup.sqldelight.runtime.coroutines.mapToList
 import comnoatrecipefood2forksq.RecipeTable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,6 +28,7 @@ class RecipeLocalDatabase(
     private val recipeDatabase = RecipeDatabase(sqlDriver)
     private val recipeQueries = recipeDatabase.recipeQueries
 
+    //mapper functions
     private fun recipeToRecipeTableMapper(recipe: Recipe): RecipeTable{
         return RecipeTable(
             id = recipe.id,
@@ -38,7 +42,6 @@ class RecipeLocalDatabase(
             date_updated = recipe.dateUpdated
         )
     }
-
     private fun recipeTableToRecipeMapper(recipeTable: RecipeTable): Recipe{
         return Recipe(
             id = recipeTable.id,
@@ -79,6 +82,7 @@ class RecipeLocalDatabase(
         }
         return searchResponse
     }
+
 
     suspend fun getRecipeById(id: Int): Recipe{
         var recipe = Recipe.empty
