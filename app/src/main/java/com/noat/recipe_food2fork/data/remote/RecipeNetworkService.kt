@@ -1,7 +1,7 @@
 package com.noat.recipe_food2fork.data.remote
 
 import android.util.Log
-import com.noat.recipe_food2fork.data.remote.model.Response
+import com.noat.recipe_food2fork.data.SearchResponse
 import com.noat.recipe_food2fork.domain.model.Recipe
 import io.ktor.client.*
 import io.ktor.client.features.json.*
@@ -32,9 +32,9 @@ class RecipeNetworkService: RecipeNetworkServiceInterface {
         }
     }
 
-    override suspend fun searchForRecipes(page: Int, query: String): Response {
+    override suspend fun searchForRecipes(page: Int, query: String): SearchResponse {
         try{
-            return client.get<Response>(urlString = "$apiUrl/search/?page=$page&query=$query")
+            return client.get<SearchResponse>(urlString = "$apiUrl/search/?page=$page&query=$query")
             {
                 headers{
                     append("Authorization", authToken)

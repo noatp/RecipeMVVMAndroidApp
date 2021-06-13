@@ -1,20 +1,31 @@
 package com.noat.recipe_food2fork.ui
 
+import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.navigation.compose.rememberNavController
+import com.noat.recipe_food2fork.data.local.RecipeLocalDatabase
 import com.noat.recipe_food2fork.data.remote.RecipeNetworkService
 import com.noat.recipe_food2fork.dependency.Dependency
 import com.noat.recipe_food2fork.ui.router.RouterController
 import com.noat.recipe_food2fork.ui.view.HomeView
 
+class ThisApplication: Application(){
+    private val context: Context = applicationContext
+    fun getAppContext(): Context{
+        return context
+    }
+}
+
 object Singleton{
-    private val recipeService: RecipeNetworkService =
-        RecipeNetworkService()
+    private val recipeNetworkService: RecipeNetworkService = RecipeNetworkService()
+    private val recipeLocalDatabase: RecipeLocalDatabase = RecipeLocalDatabase(ThisApplication().getAppContext()`)
     val appDependency= Dependency(
-        recipeService = recipeService,
+        recipeNetworkService = recipeNetworkService,
+        recipeLocalDatabase = recipeLocalDatabase
     )
 }
 

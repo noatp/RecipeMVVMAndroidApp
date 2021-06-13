@@ -1,9 +1,11 @@
 package com.noat.recipe_food2fork.dependency
 
+import com.noat.recipe_food2fork.data.local.RecipeLocalDatabase
 import com.noat.recipe_food2fork.data.remote.RecipeNetworkService
 
 class Dependency (
-    val recipeService: com.noat.recipe_food2fork.data.remote.RecipeNetworkService,
+    val recipeNetworkService: RecipeNetworkService,
+    val recipeLocalDatabase: RecipeLocalDatabase
 ) {
     class Service(val dependency: Dependency) // aka data sources
     private fun service(): Service
@@ -36,6 +38,10 @@ class Dependency (
     }
 }
 
-fun Dependency.Service.recipeService(): com.noat.recipe_food2fork.data.remote.RecipeNetworkService {
-    return dependency.recipeService
+fun Dependency.Service.recipeNetworkService(): RecipeNetworkService {
+    return dependency.recipeNetworkService
+}
+
+fun Dependency.Service.recipeLocalDatabase(): RecipeLocalDatabase{
+    return dependency.recipeLocalDatabase
 }

@@ -108,7 +108,13 @@ fun Dependency.View.DiscoveryView(
 fun PreviewDiscoveryView()
 {
     DiscoveryView(
-        recipeList = listOf(),
+        recipeList = listOf(
+            RecipeDTO(
+            id = 1,
+            title = "test",
+            featuredImage = "test",
+                ingredients = listOf("string 1", "string 2")
+            )),
         lazyListState = LazyListState(),
         isLoading = false,
         loadError = false,

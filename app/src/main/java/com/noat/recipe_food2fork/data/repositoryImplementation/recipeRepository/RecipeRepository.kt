@@ -1,12 +1,14 @@
 package com.noat.recipe_food2fork.data.repositoryImplementation.recipeRepository
 
 import android.util.Log
+import com.noat.recipe_food2fork.data.local.RecipeLocalDatabase
 import com.noat.recipe_food2fork.data.remote.RecipeNetworkService
 import com.noat.recipe_food2fork.domain.model.RecipeDTO
 import com.noat.recipe_food2fork.domain.util.RecipeDTOMapper
 import com.noat.recipe_food2fork.domain.util.recipeDTOMapper
 import com.noat.recipe_food2fork.dependency.Dependency
-import com.noat.recipe_food2fork.dependency.recipeService
+import com.noat.recipe_food2fork.dependency.recipeLocalDatabase
+import com.noat.recipe_food2fork.dependency.recipeNetworkService
 import com.noat.recipe_food2fork.domain.model.RecipePageDTO
 import com.noat.recipe_food2fork.domain.repositoryInterface.RecipeRepositoryInterface
 import com.noat.recipe_food2fork.domain.util.RecipePageDTOMapper
@@ -15,12 +17,14 @@ import java.lang.Exception
 
 class RecipeRepository(
     private val recipeNetworkService: RecipeNetworkService,
+    private val recipeLocalDatabase: RecipeLocalDatabase,
     private val recipeDTOMapper: RecipeDTOMapper,
     private val recipePageDTOMapper: RecipePageDTOMapper
 ): RecipeRepositoryInterface {
     override suspend fun getRecipeById(id: Int): RecipeDTO {
         try{
-            return recipeDTOMapper.mapDomainModelToDTO(recipeNetworkService.getRecipeById(id))
+//            return recipeDTOMapper.mapDomainModelToDTO(recipeNetworkService.getRecipeById(id))
+            return recipeDTOMapper.mapDomainModelToDTO(recipeLocalDatabase.getRecipeById(id))
         } catch (exception: Exception){
             Log.d("Rethrow exception in RecipeRepository: getRecipeById", "$exception")
             throw exception
@@ -40,7 +44,8 @@ class RecipeRepository(
 fun Dependency.Repository.recipeRepository(): RecipeRepository
 {
     return RecipeRepository(
-        service.recipeService(),
+        service.recipeNetworkService(),
+        service.recipeLocalDatabase(),
         service.recipeDTOMapper(),
         service.recipePageDTOMapper()
     )

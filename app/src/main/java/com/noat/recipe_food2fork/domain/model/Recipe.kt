@@ -27,4 +27,18 @@ data class Recipe (
 
     @SerialName(value = "date_updated")
     val dateUpdated: String,
-)
+){
+    companion object{
+        val empty = Recipe(
+            id = 0,
+            title = "",
+            publisher = "",
+            featuredImage = "",
+            rating = 0,
+            sourceUrl = "",
+            ingredients = listOf(),
+            dateAdded = "",
+            dateUpdated = ""
+        )
+    }
+}
