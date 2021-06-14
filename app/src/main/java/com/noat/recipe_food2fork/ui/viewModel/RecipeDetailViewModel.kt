@@ -2,57 +2,64 @@ package com.noat.recipe_food2fork.ui.viewModel
 
 import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import com.noat.recipe_food2fork.dependency.Dependency
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.noat.recipe_food2fork.domain.model.RecipeDTO
 import com.noat.recipe_food2fork.domain.useCase.GetRecipeDetailUseCase
 import com.noat.recipe_food2fork.domain.useCase.UseCaseResult
 import com.noat.recipe_food2fork.domain.useCase.getRecipeDetailUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class RecipeDetailViewModel(
-    private val getRecipeDetailUseCase: GetRecipeDetailUseCase
+    private val getRecipeDetailUseCase: GetRecipeDetailUseCase,
 ): ViewModel(){
-    data class RecipeForDetailView(
-        val title: String,
-        val featuredImage: String,
-        val ingredients: List<String>
-    )
-
-    var recipeForDetailView: MutableState<RecipeForDetailView> = mutableStateOf(
-        RecipeForDetailView(
-            title = "",
-            featuredImage = "",
-            ingredients = listOf()
-        )
-    )
+    private val uiMutableState = MutableStateFlow(RecipeDetailViewStates.empty)
+    val uiState: StateFlow<RecipeDetailViewStates> = uiMutableState
 
     fun onLaunch(recipeId: Int){
         viewModelScope.launch(Dispatchers.IO) {
-            when(val result = getRecipeDetailUseCase.execute(recipeId))
+            when(val useCaseResult = getRecipeDetailUseCase.execute(recipeId))
             {
-                is UseCaseResult.Success -> recipeForDetailView.value = result.resultValue.let{
-                    RecipeForDetailView(
-                        title = it.title,
-                        featuredImage = it.featuredImage,
-                        ingredients = it.ingredients
-                    )
+                is UseCaseResult.Success -> {
+                    useCaseResult.resultValue.collect {
+                        uiMutableState.value = uiMutableState.value.copy(
+                            loadError = false,
+                            recipe = it
+                        )
+                    }
                 }
-                is UseCaseResult.Error -> Log.d("Debug: RecipeDetailViewModel",
-                    result.exception.toString()
-                )
+                is UseCaseResult.Error -> {
+                    uiMutableState.value = uiMutableState.value.copy(
+                        loadError = true
+                    )
+                    Log.d("Exception in RecipeDetailViewModel: onLaunch", "${useCaseResult.exception}")
+                }
             }
         }
     }
 }
 
+data class RecipeDetailViewStates(
+    val recipe: RecipeDTO,
+    val loadError: Boolean
+){
+    companion object{
+        val empty = RecipeDetailViewStates(
+            recipe = RecipeDTO.empty,
+            loadError = false
+        )
+    }
+}
+
 class RecipeDetailViewModelFactory(
-    private val getRecipeDetailUseCase: GetRecipeDetailUseCase
+    private val getRecipeDetailUseCase: GetRecipeDetailUseCase,
 ): ViewModelProvider.Factory{
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(

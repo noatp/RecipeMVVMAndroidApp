@@ -8,8 +8,11 @@ import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
+import com.squareup.sqldelight.runtime.coroutines.mapToOne
 import comnoatrecipefood2forksq.RecipeTable
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -84,11 +87,12 @@ class RecipeLocalDatabase(
     }
 
 
-    suspend fun getRecipeById(id: Int): Recipe{
-        var recipe = Recipe.empty
-        withContext(Dispatchers.IO){
-            recipe = recipeTableToRecipeMapper(recipeQueries.getRecipeById(id).executeAsOne())
-        }
-        return recipe
+    fun getRecipeById(id: Int): Flow<Recipe> {
+        return recipeQueries.getRecipeById(id)
+            .asFlow()
+            .mapToOne()
+            .map { recipeTable: RecipeTable ->
+                recipeTableToRecipeMapper(recipeTable = recipeTable)
+            }
     }
 }

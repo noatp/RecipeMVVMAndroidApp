@@ -8,6 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,12 +23,13 @@ import com.noat.recipe_food2fork.ui.viewModel.recipeDetailViewModel
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
 import com.google.accompanist.imageloading.LoadPainter
+import com.noat.recipe_food2fork.domain.model.RecipeDTO
 import kotlinx.coroutines.Dispatchers
 
 @Composable
 fun RecipeDetailView(
     painter: LoadPainter<Any>,
-    recipe:  RecipeDetailViewModel.RecipeForDetailView
+    recipe:  RecipeDTO
 ){
     Surface() {
         LazyColumn(
@@ -83,7 +85,9 @@ fun RecipeDetailView(
 fun Dependency.View.RecipeDetailView(recipeId: Int)
 {
     val recipeDetailViewModel = viewModel.recipeDetailViewModel()
-    val recipe = recipeDetailViewModel.recipeForDetailView.value
+    val uiState = recipeDetailViewModel.uiState.collectAsState().value
+    val recipe = uiState.recipe
+    println("HERE")
     val painter = rememberCoilPainter(
         request = recipe.featuredImage,
         requestBuilder = {
@@ -92,7 +96,7 @@ fun Dependency.View.RecipeDetailView(recipeId: Int)
         fadeIn = true
     )
 
-    recipeDetailViewModel.onLaunch(recipeId)
+    recipeDetailViewModel.onLaunch(recipeId = recipeId)
 
     RecipeDetailView(
         painter = painter,
@@ -111,7 +115,8 @@ fun PreviewRecipeDetailView()
 
     RecipeDetailView(
         painter = painter,
-        recipe = RecipeDetailViewModel.RecipeForDetailView(
+        recipe = RecipeDTO(
+            id = 1,
             title = "This is a title",
             featuredImage = "url",
             ingredients = listOf("ingredient1", "ingredient2", "ingredient3")

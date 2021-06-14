@@ -5,4 +5,13 @@ data class RecipeDTO(
     val title: String,
     val featuredImage: String,
     val ingredients: List<String> = listOf(),
-)
+){
+    companion object{
+        val empty = RecipeDTO(
+            id = 0,
+            title = "",
+            featuredImage = "",
+            ingredients = listOf()
+        )
+    }
+}

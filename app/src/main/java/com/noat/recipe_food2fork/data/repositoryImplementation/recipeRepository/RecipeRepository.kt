@@ -14,8 +14,8 @@ import com.noat.recipe_food2fork.domain.model.RecipePageDTO
 import com.noat.recipe_food2fork.domain.repositoryInterface.RecipeRepositoryInterface
 import com.noat.recipe_food2fork.domain.util.RecipePageDTOMapper
 import com.noat.recipe_food2fork.domain.util.recipePageDTOMapper
-import java.io.IOException
-import java.lang.Exception
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class RecipeRepository(
     private val recipeNetworkService: RecipeNetworkService,
@@ -26,18 +26,11 @@ class RecipeRepository(
 
     private val currentQuery: String = ""
 
-    private suspend fun storeRecipeFromNetwork(id: Int) {
-        val recipeFromNetwork = recipeNetworkService.getRecipeById(id)
-        recipeLocalDatabase.insertRecipe(recipeFromNetwork)
-    }
-
-    private suspend fun getRecipeByIdFromDB(id: Int): Recipe{
-        return recipeLocalDatabase.getRecipeById(id)
-    }
-
-    override suspend fun getRecipeById(id: Int): RecipeDTO {
-        storeRecipeFromNetwork(id)
-        return recipeDTOMapper.mapDomainModelToDTO(getRecipeByIdFromDB(id))
+    override suspend fun getRecipeById(id: Int): Flow<RecipeDTO> {
+        val recipeFromDB: Flow<Recipe> = recipeLocalDatabase.getRecipeById(id)
+        return recipeFromDB.map { recipe: Recipe ->
+            recipeDTOMapper.mapDomainModelToDTO(recipe)
+        }
     }
 
     //this suspend function will go through all the result pages of a query,
@@ -45,7 +38,7 @@ class RecipeRepository(
     private suspend fun searchForRecipesFromNetwork(query: String){
         var currentPage = 1
         do{
-            var currentResponse = recipeNetworkService.searchForRecipes(currentPage, query)
+            val currentResponse = recipeNetworkService.searchForRecipes(currentPage, query)
             currentResponse.results.map{ recipe: Recipe ->
                 recipeLocalDatabase.insertRecipe(recipe = recipe)
             }
