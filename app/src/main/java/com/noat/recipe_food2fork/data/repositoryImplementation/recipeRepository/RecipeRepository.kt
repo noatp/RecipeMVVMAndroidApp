@@ -15,6 +15,8 @@ import com.noat.recipe_food2fork.domain.repositoryInterface.RecipeRepositoryInte
 import com.noat.recipe_food2fork.domain.util.RecipePageDTOMapper
 import com.noat.recipe_food2fork.domain.util.recipePageDTOMapper
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 class RecipeRepository(
@@ -29,28 +31,24 @@ class RecipeRepository(
     override suspend fun getRecipeById(id: Int): Flow<RecipeDTO> {
         val recipeFromDB: Flow<Recipe> = recipeLocalDatabase.getRecipeById(id)
         return recipeFromDB.map { recipe: Recipe ->
+            if(recipe == Recipe.empty){
+                //NOTE: flow is executed within a coroutine -> when calling a suspend function,
+                // the flow is suspended until the suspend function returns.
+                //SEQUENTIALLY execute the network call, and then store it into database
+                val recipeFromNetwork = recipeNetworkService.getRecipeById(id)
+                recipeLocalDatabase.insertRecipe(recipeFromNetwork)
+            }
             recipeDTOMapper.mapDomainModelToDTO(recipe)
+        }.catch{ exception: Throwable ->
+            Log.d("Rethrowing in RecipeRepository: getRecipeById", "$exception")
+            throw exception
         }
     }
 
     //this suspend function will go through all the result pages of a query,
     //copy all the data into local database
-    private suspend fun searchForRecipesFromNetwork(query: String){
-        var currentPage = 1
-        do{
-            val currentResponse = recipeNetworkService.searchForRecipes(currentPage, query)
-            currentResponse.results.map{ recipe: Recipe ->
-                recipeLocalDatabase.insertRecipe(recipe = recipe)
-            }
-            currentPage++
-        } while (currentResponse.next != null)
-    }
-
     override suspend fun searchForRecipes(page: Int, query: String): RecipePageDTO {
-        if(query != currentQuery){
-            searchForRecipesFromNetwork(query) // insert recipe list from network into local db
-        }
-        return(recipePageDTOMapper.mapResponseToRecipeDTOMapper(recipeLocalDatabase.searchForRecipes(page, query)))
+        return(recipePageDTOMapper.mapResponseToRecipeDTOMapper(recipeNetworkService.searchForRecipes(page, query)))
     }
 }
 

@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class RecipeDetailViewModel(
     private val getRecipeDetailUseCase: GetRecipeDetailUseCase,
@@ -28,11 +29,19 @@ class RecipeDetailViewModel(
             when(val useCaseResult = getRecipeDetailUseCase.execute(recipeId))
             {
                 is UseCaseResult.Success -> {
-                    useCaseResult.resultValue.collect {
+                    //handle exception from flow
+                    try{
+                        useCaseResult.resultValue.collect {
+                            uiMutableState.value = uiMutableState.value.copy(
+                                loadError = false,
+                                recipe = it
+                            )
+                        }
+                    } catch (exception: Exception){
                         uiMutableState.value = uiMutableState.value.copy(
-                            loadError = false,
-                            recipe = it
+                            loadError = true
                         )
+                        Log.d("Exception in RecipeDetailViewModel: onLaunch", "$exception")
                     }
                 }
                 is UseCaseResult.Error -> {

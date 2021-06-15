@@ -12,6 +12,10 @@ import com.noat.recipe_food2fork.data.remote.RecipeNetworkService
 import com.noat.recipe_food2fork.dependency.Dependency
 import com.noat.recipe_food2fork.ui.router.RouterController
 import com.noat.recipe_food2fork.ui.view.HomeView
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.encodeToJsonElement
 
 class ThisApplication : Application() {
 
