@@ -1,6 +1,7 @@
 package com.noat.recipe_food2fork.data.local
 
 import android.content.Context
+import com.noat.recipe_food2fork.data.SearchResponse
 import com.noat.recipe_food2fork.database.RecipeDatabase
 import com.noat.recipe_food2fork.domain.model.Recipe
 import com.squareup.sqldelight.android.AndroidSqliteDriver
@@ -68,23 +69,44 @@ class RecipeLocalDatabase(
         }
     }
 
-    fun searchForRecipes(page: Int, query: String): Flow<List<Recipe>?> {
-        return recipeQueries.searchRecipes(
-            query = query,
-            pageSize = PAGE_SIZE.toLong(),
-            page = page.toLong()
-        ).asFlow().mapToList().map { listRecipeTable: List<RecipeTable> ->
-            if(listRecipeTable == emptyList<RecipeTable>()){
-                null
-            }
-            else{
-                listRecipeTable.map { recipeTable: RecipeTable ->
-                    recipeTableToRecipeMapper(recipeTable)
+    suspend fun insertListRecipe(recipeList: List<Recipe>){
+        withContext(Dispatchers.IO){
+            recipeQueries.transaction {
+                recipeList.map {
+                    recipeQueries.insertRecipe(
+                        recipeToRecipeTableMapper(it)
+                    )
                 }
             }
         }
     }
 
+    fun searchForRecipes(page: Int, query: String): SearchResponse {
+//        return recipeQueries.searchRecipes(
+//            query = query,
+//            pageSize = PAGE_SIZE.toLong(),
+//            page = page.toLong()
+//        ).asFlow().mapToList().map { listRecipeTable: List<RecipeTable> ->
+//            if(listRecipeTable == emptyList<RecipeTable>()){
+//                null
+//            }
+//            else{
+//                listRecipeTable.map { recipeTable: RecipeTable ->
+//                    recipeTableToRecipeMapper(recipeTable)
+//                }
+//            }
+//        }
+        return SearchResponse(
+            count = 0,
+            next = "",
+            previous = "",
+            results = recipeQueries.searchRecipes(query, 30, page.toLong())
+                .executeAsList()
+                .map {
+                    recipeTableToRecipeMapper(it)
+                }
+        )
+    }
 
     fun getRecipeById(id: Int): Flow<Recipe> {
         return recipeQueries.getRecipeById(id)

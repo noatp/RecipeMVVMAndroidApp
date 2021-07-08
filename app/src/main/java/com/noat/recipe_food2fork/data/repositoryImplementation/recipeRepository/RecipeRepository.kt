@@ -26,8 +26,8 @@ class RecipeRepository(
     private val recipePageDTOMapper: RecipePageDTOMapper
 ): RecipeRepositoryInterface {
 
-    private val currentQuery: String = ""
-
+    //this function will fetch the recipe, store it into the database,
+    //then return the data from database
     override suspend fun getRecipeById(id: Int): Flow<RecipeDTO> {
         val recipeFromDB: Flow<Recipe> = recipeLocalDatabase.getRecipeById(id)
         return recipeFromDB.map { recipe: Recipe ->
@@ -45,10 +45,11 @@ class RecipeRepository(
         }
     }
 
-    //this suspend function will go through all the result pages of a query,
-    //copy all the data into local database
+    //this function will fetch a recipe page from network and return it
     override suspend fun searchForRecipes(page: Int, query: String): RecipePageDTO {
-        return(recipePageDTOMapper.mapResponseToRecipeDTOMapper(recipeNetworkService.searchForRecipes(page, query)))
+        return recipePageDTOMapper.mapResponseToRecipeDTOMapper(
+            recipeNetworkService.searchForRecipes(page, query)
+        )
     }
 }
 

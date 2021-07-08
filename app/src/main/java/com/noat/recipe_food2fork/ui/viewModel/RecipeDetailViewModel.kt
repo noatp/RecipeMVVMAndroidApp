@@ -41,7 +41,7 @@ class RecipeDetailViewModel(
                         uiMutableState.value = uiMutableState.value.copy(
                             loadError = true
                         )
-                        Log.d("Exception in RecipeDetailViewModel: onLaunch", "$exception")
+                        Log.d("Exception in RecipeDetailViewModel: onLaunch: Flow", "$exception")
                     }
                 }
                 is UseCaseResult.Error -> {

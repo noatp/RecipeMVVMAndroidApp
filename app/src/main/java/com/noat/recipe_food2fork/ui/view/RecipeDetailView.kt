@@ -87,7 +87,6 @@ fun Dependency.View.RecipeDetailView(recipeId: Int)
     val recipeDetailViewModel = viewModel.recipeDetailViewModel()
     val uiState = recipeDetailViewModel.uiState.collectAsState().value
     val recipe = uiState.recipe
-    println("HERE")
     val painter = rememberCoilPainter(
         request = recipe.featuredImage,
         requestBuilder = {

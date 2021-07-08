@@ -54,7 +54,7 @@ class SearchRecipeViewModel(
                     )
                     mostRecentlyLoadedPage += 1
                     currentNetworkJob = viewModelScope.launch(Dispatchers.IO){
-                        delay(100)
+//                        delay(100)
                         println("Job launch with query: ${uiMutableState.value.searchBarText}")
                         when(val useCaseResult = getRecipeListUseCase.execute(
                             page = mostRecentlyLoadedPage,
