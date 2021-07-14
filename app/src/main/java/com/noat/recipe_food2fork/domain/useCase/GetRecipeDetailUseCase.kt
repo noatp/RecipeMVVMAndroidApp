@@ -21,6 +21,7 @@ class GetRecipeDetailUseCase(
     }
 }
 
+//test github email commit
 fun Dependency.UseCase.getRecipeDetailUseCase(): GetRecipeDetailUseCase
 {
     return GetRecipeDetailUseCase(repository.recipeRepository())
